@@ -1,0 +1,12 @@
+{
+  "appId": "com.portops.simulator",
+  "appName": "Port Ops Simulator",
+  "webDir": "dist/www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "backgroundColor": "#071726"
+}
