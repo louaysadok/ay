@@ -39,3 +39,6 @@ then download the artifacts. (Release-signed APKs / store listings need your own
 * The Electron window and the Android build were NOT run in the authoring
   environment (no Electron binary download and no Android SDK there). Expect to fix
   small things on the first real build.
+
+### Gradle wrapper note
+`android/gradle/wrapper/gradle-wrapper.jar` is not stored in the repo (binary). Android Studio does not need it. For the command line, run `gradle wrapper --gradle-version 8.2.1` once inside `android/`, or use the GitHub workflow, which installs Gradle itself.

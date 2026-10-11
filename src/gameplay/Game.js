@@ -37,7 +37,7 @@ const SPAWN = {
  * seen from further back to be useful, the forklift sits closer.
  */
 const FRAME_ZOOM = {
-  forklift: 15, tractor: 14, reachstacker: 11.5, rtg: 9.5, harborcrane: 8
+  forklift: 20, tractor: 18, reachstacker: 14, rtg: 11, harborcrane: 9
 };
 
 export class Game {
@@ -67,7 +67,7 @@ export class Game {
     const terminal = new Terminal(this.layout, this.bus);
     const terrain = new TerrainRenderer(this.layout);
     terminal.terrain = terrain;
-    const camera = new Camera({ zoom: 4.6, minZoom: 1.35, maxZoom: 13, bounds: terminal.bounds });
+    const camera = new Camera({ zoom: 4.6, minZoom: 1.35, maxZoom: 24, bounds: terminal.bounds });
     camera.followSmoothing = 4.2;
     const renderer = new Renderer(this.canvas, { terminal, camera, terrain, bus: this.bus, quality: this.settings.get('quality') });
     const attachments = new AttachmentSystem(terminal, this.bus);

@@ -44,7 +44,11 @@ jobs:
         with: { distribution: temurin, java-version: 17 }
       - run: npm install --no-audit --no-fund
       - run: npm run cap:sync
-      - run: chmod +x android/gradlew && cd android && ./gradlew assembleDebug --no-daemon
+      # gradle-wrapper.jar is a binary that is not stored in the repo, so install Gradle directly
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.2.1
+      - run: cd android && gradle assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: PortOps-android-debug-apk
