@@ -274,15 +274,15 @@ function juSafe(el, type, fn) {
   el?.addEventListener(type, fn, { passive: true });
 }
 function shortLabel(label = '') {
-  const words = String(label).split(' ');
-  if (words.length <= 2) return label;
-  return words.slice(0, 2).join(' ');
+  // keep the full wording (it carries the direction); CSS wraps it onto two lines
+  return String(label);
 }
 function actionIcon(action, spec) {
   switch (action) {
-    case 'auxUp': case 'auxDown':
-      return spec.attachment === 'hook' ? 'hook' : spec.attachment === 'spreader' ? 'spreader' : 'up';
-    case 'auxLeft': case 'auxRight': return 'left';
+    case 'auxUp': return 'up';       // direction first: Up/Down must never share an icon
+    case 'auxDown': return 'down';
+    case 'auxLeft': return 'left';
+    case 'auxRight': return 'right';
     case 'cycle': return 'rotate';
     case 'interact': return 'hook';
     default: return 'gear';

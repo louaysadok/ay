@@ -478,6 +478,7 @@ await step('academy lesson completes and produces a scored debrief', async () =>
     if (!(k in r.breakdown)) throw new Error(`no ${k} in breakdown`);
   }
   if (!(save.profile.missions[lesson.id]?.completed)) throw new Error('progress was not saved');
+  if ((save.profile.achievements || {})['academy-graduate'] || (save.profile.achievements || []).includes?.('academy-graduate')) throw new Error('Academy Graduate awarded after a single lesson');
   notes.push(`debrief score ${r.score} (${Object.entries(r.breakdown).map(([k, v]) => `${k} ${v}`).join(', ')})`);
 });
 

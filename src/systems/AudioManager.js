@@ -95,7 +95,7 @@ export class AudioManager {
     set(this.nodes.warnings, g.warnings);
     set(this.nodes.ui, g.ui);
     set(this.nodes.music, g.music);
-    if (this.music) this.music.setVolume(g.music);
+    if (this.music) this.setMusicVolume(g.music);
   }
 
   /* ---------------------------------------------------------------- helpers */

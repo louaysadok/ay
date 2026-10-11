@@ -5,8 +5,10 @@
    ========================================================================== */
 
 /* -------------------------------------------------- touch-capable devices -- */
-body.is-touch .hud-controls{display:none}          /* on-screen buttons replace key hints */
-body.is-touch #hud-map,#hud-sound{display:none}    /* moved into the side cluster */
+body.is-touch .hud-controls{display:none}
+body.is-touch #t-mentor,body.is-touch #t-pause{display:none}   /* HUD already has Ask Mentor + Pause */
+
+body.is-touch #hud-map{display:none}            /* minimap toggle lives elsewhere on touch */
 body.is-touch .hud-machines{max-width:min(330px,42vw)}
 body.is-touch .hud-minimap{width:150px;bottom:calc(178px + var(--safe-b))}
 body.is-touch .hud-left{max-width:min(430px,50vw)}
@@ -41,7 +43,7 @@ body.is-touch .hud-left{max-width:min(430px,50vw)}
   .machine-panel{width:238px;padding:8px 10px;gap:6px}
   .mp-svg{width:88px;height:46px}
   .t-actions{grid-template-columns:repeat(3,66px)}
-  .t-act{width:66px;height:48px;font-size:10.5px}
+  .t-act{width:66px;height:54px;font-size:10.5px}
   .t-act.wide{width:141px}
   .t-joystick{width:132px;height:132px}
   .t-knob{width:54px;height:54px;margin:-27px 0 0 -27px}
@@ -57,17 +59,43 @@ body.is-touch .hud-left{max-width:min(430px,50vw)}
 /* Very short landscape screens (older phones) ----------------------------- */
 @media (max-height:460px) and (orientation:landscape){
   .hud-minimap{display:none}
+  body.is-touch .hud-machines{display:none}   /* would sit under the action buttons */
   .machine-panel .mp-body{display:none}
   .mission-card .mc-desc{display:none}
   .t-joystick{width:112px;height:112px}
   .t-pedal{width:58px;height:58px}
   .t-brake{width:78px;height:48px}
-  .t-act{width:60px;height:44px;font-size:10px}
+  .t-act{width:62px;height:52px;font-size:10px}
   .t-actions{grid-template-columns:repeat(3,60px);gap:7px}
   .t-act.wide{width:127px}
   .dialogue{max-height:60vh}
   .dlg-portrait,.dlg-portrait canvas{width:88px}
   .dlg-portrait canvas{height:88px}
+}
+
+/* Compact menu + Mentor card on short landscape screens so the greeting never
+   covers the menu buttons */
+@media (max-height:460px) and (orientation:landscape){
+  .menu{align-items:flex-start;padding-top:calc(8px + var(--safe-t,0px))}
+  .menu-wrap{gap:6px}
+  .brand-mark{width:40px;height:40px}
+  .menu-buttons{gap:5px}
+  .mbtn{padding:5px 11px}
+  .mbtn>.ico{width:22px;height:22px}
+  .mbtn .mb-main{font-size:13.5px}
+  .menu-row{gap:6px}
+  .mbtn.small{padding:7px 10px}
+  .player-card{padding:6px 10px;min-width:170px}
+  #dialogue-layer{padding-bottom:calc(6px + var(--safe-b))}
+  .dialogue{padding:8px 10px;gap:10px;max-height:44vh}
+  .dlg-portrait,.dlg-portrait canvas{width:72px}
+  .dlg-portrait canvas{height:72px}
+  .dlg-name{padding:3px 0;left:-4px;right:-4px}
+  .dlg-name b{font-size:10.5px;white-space:nowrap}
+  .dlg-name i{display:none}
+  .dlg-text{font-size:12.5px;line-height:1.45}
+  .dlg-opt{padding:5px 10px;font-size:12px}
+  .dlg-body{gap:6px}
 }
 
 /* -------------------------------------------------------- portrait notice -- */

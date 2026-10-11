@@ -53,12 +53,12 @@ export class Forklift extends Vehicle {
   gripPoint() {
     const s = this.spec;
     const reach = s.length * 0.30 + this.sideShift * 0;
-    const p = this.localToWorld(s.length * 0.62 + reach - 0.55, this.sideShift);
+    const p = this.localToWorld(s.length * 0.62 + reach - 0.55 - s.length * 0.5, this.sideShift);   // origin = machine centre
     return { x: p.x, y: p.y, angle: this.angle };
   }
   pickupPoint() {
     const s = this.spec;
-    const p = this.localToWorld(s.length * 0.62 + s.length * 0.30 - 0.55, this.sideShift);
+    const p = this.localToWorld(s.length * 0.62 + s.length * 0.30 - 0.55 - s.length * 0.5, this.sideShift);
     return { x: p.x, y: p.y, angle: this.angle };
   }
   releasePoint() { return this.pickupPoint.call(this); }

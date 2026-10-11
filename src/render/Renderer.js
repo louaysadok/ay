@@ -552,22 +552,22 @@ export class Renderer {
       ctx.fillRect(-w / 2 + 0.3, h / 2 - 0.2, w, lift * 0.55);
       ctx.globalAlpha = 1;
     }
-    ctx.globalAlpha = 0.3;
-    ctx.drawImage(spr.canvas, -spr.drawW / 2 + SHADOW_DX * .5, -spr.drawH / 2 + SHADOW_DY * .5 - lift, spr.drawW, spr.drawH);
+    // dark silhouette shadow (a tinted sprite copy read as a ghost container)
+    ctx.globalAlpha = 0.26;
+    ctx.fillStyle = '#05121c';
+    ctx.fillRect(-w / 2 + SHADOW_DX * .2 + lift * .3, -h / 2 + SHADOW_DY * .22 + lift * .3, w, h);
     ctx.globalAlpha = 1;
     ctx.drawImage(spr.canvas, -spr.drawW / 2, -spr.drawH / 2 - lift, spr.drawW, spr.drawH);
-    // tier badge
-    if (tier > 0 && this.camera.zoom > 0.85) {
+    // stack-height marking: a quiet stencil on the top box, not a UI badge
+    if (tier > 0 && this.camera.zoom > 6) {
       ctx.save();
       ctx.translate(0, -lift);
-      ctx.fillStyle = 'rgba(7,23,38,.72)';
-      this.roundRect(ctx, w / 2 - 4.6, -h / 2 + 0.4, 4.2, 2.2, 0.5);
-      ctx.fill();
-      ctx.fillStyle = '#ffc53d';
-      ctx.font = '700 1.7px "Segoe UI", system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(`x${tier + 1}`, w / 2 - 2.5, -h / 2 + 1.5);
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#f4f8fb';
+      ctx.font = '700 1.5px "Segoe UI", system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`\u00d7${tier + 1}`, w / 2 - 0.7, -h / 2 + 0.5);
       ctx.restore();
     }
     ctx.restore();
@@ -739,7 +739,7 @@ export class Renderer {
     // articulated parts are authored in sprite-pixel space: translate to the
     // sprite origin then scale down to metres.
     ctx.save();
-    ctx.translate(-sp.drawW / 2 + sp.pad, -sp.drawH / 2 + sp.pad);
+    ctx.translate(-sp.drawW / 2 + sp.pad / sp.ppu, -sp.drawH / 2 + sp.pad / sp.ppu);   // pad is in sprite pixels
     ctx.scale(1 / sp.ppu, 1 / sp.ppu);
     SF.drawAttachment(ctx, v.type, { ...v.drawState(), load: !!v.load }, sp.ppu, dims);
     ctx.restore();
@@ -830,11 +830,11 @@ export class Renderer {
   loadLocalOffset(v) {
     const L = v.spec.length;
     if (v.type === 'forklift') {
-      return { x: L * 0.62 + L * 0.30 * 0.55, y: v.sideShift, rot: 0 };
+      return { x: L * 0.62 + L * 0.30 - 0.55 - L * 0.5, y: v.sideShift, rot: 0 };   // centred on the tines
     }
     if (v.type === 'reachstacker') {
       const st = v.drawState();
-      const pivot = L * (v.spec.boomPivotX ?? 0.56);
+      const pivot = L * ((v.spec.boomPivotX ?? 0.56) - 0.5);
       const len = L * 0.42 + L * 0.58 * st.boomExtend;
       return { x: pivot + Math.cos(st.boomAngle) * len, y: Math.sin(st.boomAngle) * len, rot: st.boomAngle };
     }
@@ -842,7 +842,7 @@ export class Renderer {
       return { x: 0, y: v.spreaderOffsetY ? v.spreaderOffsetY() : 0, rot: 0 };
     }
     if (v.type === 'harborcrane') {
-      return { x: L * 0.46 + (v.radius ?? 10), y: 0, rot: 0 };
+      return { x: L * (0.46 - 0.5) + (v.radius ?? 10), y: 0, rot: 0 };
     }
     return { x: L * 0.45, y: 0, rot: 0 };
   }

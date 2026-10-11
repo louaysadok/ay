@@ -9,3 +9,8 @@
 *.log
 *.tmp
 .DS_Store
+/release/
+/android/app/build/
+/android/.gradle/
+/android/build/
+/android/local.properties

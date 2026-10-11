@@ -112,6 +112,18 @@ export class RTG extends Vehicle {
     };
   }
 
+  /**
+   * A gantry straddles its stacks: only the four legs are solid. (The default
+   * hull is two big circles, which would shove the crane out of the yard.)
+   */
+  get hull() {
+    const l = this.spec.length * 0.31, w = this.spec.width * 0.5 - 0.7;
+    return [
+      { dx: l, dy: w, r: 0.6 }, { dx: l, dy: -w, r: 0.6 },
+      { dx: -l, dy: w, r: 0.6 }, { dx: -l, dy: -w, r: 0.6 }
+    ];
+  }
+
   /** RTGs must stay inside their block lane. */
   preferredBlock() { return null; }
 }

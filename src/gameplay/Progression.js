@@ -16,11 +16,12 @@ export const LEVEL_TITLES = [
 ];
 
 export class Progression {
-  constructor({ save, bus, i18n, missions, machines }) {
+  constructor({ save, bus, i18n, missions, machines, lessons }) {
     this.save = save;
     this.bus = bus;
     this.i18n = i18n;
     this.missionDefs = missions;
+    this.lessonDefs = lessons;
     this.machineDefs = machines;
   }
 
@@ -119,10 +120,13 @@ export class Progression {
     if (!p.stats.operated.includes(machine)) { p.stats.operated.push(machine); this.save.saveProfile(); }
   }
   allCareerComplete() {
-    return (this.missionDefs?.career?.missions || []).every((m) => this.profile.missions[m.id]?.completed);
+    const list = this.missionDefs?.career?.missions || [];
+    return list.length > 0 && list.every((m) => this.profile.missions[m.id]?.completed);
   }
   allAcademyComplete() {
-    return (this.missionDefs?.academy?.lessons || []).every((l) => this.profile.missions[l.id]?.completed);
+    // an empty list must never count as "all complete"
+    const list = this.lessonDefs?.lessons || this.missionDefs?.academy?.lessons || [];
+    return list.length > 0 && list.every((l) => this.profile.missions[l.id]?.completed);
   }
 
   /* ------------------------------------------------------- availability --- */

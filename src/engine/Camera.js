@@ -8,10 +8,10 @@ export class Camera {
   constructor(opts = {}) {
     this.x = opts.x ?? 0;
     this.y = opts.y ?? 0;
-    this.zoom = opts.zoom ?? 4.6;                 // pixels per world metre
+    this.zoom = opts.zoom ?? 11.6;                 // pixels per world metre
     this.targetZoom = this.zoom;
     this.minZoom = opts.minZoom ?? 1.35;          // whole terminal visible
-    this.maxZoom = opts.maxZoom ?? 13;
+    this.maxZoom = opts.maxZoom ?? 16;
     this.vw = 1280; this.vh = 720;                 // viewport size in CSS pixels
     this.bounds = opts.bounds || null;             // {x,y,w,h} world bounds (camera stays inside)
     this.followSmoothing = opts.followSmoothing ?? 5.0;

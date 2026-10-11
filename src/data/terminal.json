@@ -8,23 +8,23 @@
     "waterLine": 30
   },
   "palette": {
-    "concrete": "#68727b",
-    "concreteDark": "#5b656e",
-    "asphalt": "#3a434c",
-    "asphaltDark": "#333b44",
-    "asphaltLight": "#444e57",
-    "quayApron": "#737d86",
-    "yardPav": "#636d76",
-    "training": "#5a646d",
-    "marking": "#dde5eb",
-    "markingWorn": "#b9c4cd",
-    "yellowLine": "#e8b23a",
-    "hazardRed": "#c05555",
-    "water": "#12587f",
-    "waterDeep": "#0b415c",
-    "trainLine": "#6f7a83",
-    "dirt": "#4a4740",
-    "grass": "#4e6b4a"
+    "concrete": "#7d8791",
+    "concreteDark": "#4a535c",
+    "asphalt": "#2f373f",
+    "asphaltDark": "#28303a",
+    "asphaltLight": "#3b444e",
+    "quayApron": "#8b949d",
+    "yardPav": "#5d6771",
+    "training": "#666f79",
+    "marking": "#f2f7fa",
+    "markingWorn": "#c3cdd5",
+    "yellowLine": "#f0b429",
+    "hazardRed": "#c8483f",
+    "water": "#0f5c86",
+    "waterDeep": "#072f47",
+    "trainLine": "#79848e",
+    "dirt": "#443f36",
+    "grass": "#4a6a46"
   },
   "areas": [
     {
@@ -369,72 +369,112 @@
     {
       "id": "yard-n1",
       "name": "Block N1",
-      "x": 40,
-      "y": 96,
-      "cols": 5,
-      "rows": 2,
-      "orient": "x",
-      "slotW": 12.4,
-      "gap": 1.6,
+      "x": 34,
+      "y": 90,
+      "cols": 7,
+      "rows": 3,
       "maxTier": 4,
-      "lane": 6.4,
-      "kind": "rtg"
+      "slotW": 12.4,
+      "gap": 1.6
+    },
+    {
+      "id": "yard-n3",
+      "name": "Block N3",
+      "x": 146,
+      "y": 90,
+      "cols": 7,
+      "rows": 3,
+      "maxTier": 4,
+      "slotW": 12.4,
+      "gap": 1.6
     },
     {
       "id": "yard-n2",
       "name": "Block N2",
-      "x": 40,
-      "y": 128,
-      "cols": 5,
-      "rows": 2,
-      "orient": "x",
-      "slotW": 12.4,
-      "gap": 1.6,
+      "x": 34,
+      "y": 109,
+      "cols": 7,
+      "rows": 3,
       "maxTier": 4,
-      "lane": 6.4,
-      "kind": "rtg"
-    },
-    {
-      "id": "yard-s1",
-      "name": "Block S1",
-      "x": 40,
-      "y": 158,
-      "cols": 5,
-      "rows": 2,
-      "orient": "x",
       "slotW": 12.4,
-      "gap": 1.6,
-      "maxTier": 4,
-      "lane": 6.4,
-      "kind": "rtg"
+      "gap": 1.6
     },
     {
       "id": "yard-s2",
       "name": "Block S2",
-      "x": 142,
-      "y": 96,
-      "cols": 4,
-      "rows": 2,
-      "orient": "x",
-      "slotW": 12.4,
-      "gap": 1.6,
+      "x": 146,
+      "y": 109,
+      "cols": 7,
+      "rows": 3,
       "maxTier": 3,
-      "lane": 6.4,
-      "kind": "rs"
+      "slotW": 12.4,
+      "gap": 1.6
+    },
+    {
+      "id": "yard-s1",
+      "name": "Block S1",
+      "x": 34,
+      "y": 128,
+      "cols": 7,
+      "rows": 3,
+      "maxTier": 4,
+      "slotW": 12.4,
+      "gap": 1.6
     },
     {
       "id": "yard-e1",
       "name": "Block E1",
-      "x": 142,
-      "y": 158,
-      "cols": 4,
-      "rows": 2,
-      "orient": "x",
-      "slotW": 12.4,
-      "gap": 1.6,
+      "x": 146,
+      "y": 128,
+      "cols": 7,
+      "rows": 3,
       "maxTier": 3,
-      "lane": 6.4,
-      "kind": "rs"
+      "slotW": 12.4,
+      "gap": 1.6
+    },
+    {
+      "id": "yard-w1",
+      "name": "Block W1",
+      "x": 34,
+      "y": 147,
+      "cols": 7,
+      "rows": 3,
+      "maxTier": 3,
+      "slotW": 12.4,
+      "gap": 1.6
+    },
+    {
+      "id": "yard-e2",
+      "name": "Block E2",
+      "x": 146,
+      "y": 147,
+      "cols": 7,
+      "rows": 3,
+      "maxTier": 3,
+      "slotW": 12.4,
+      "gap": 1.6
+    },
+    {
+      "id": "yard-w2",
+      "name": "Block W2",
+      "x": 34,
+      "y": 166,
+      "cols": 7,
+      "rows": 3,
+      "maxTier": 3,
+      "slotW": 12.4,
+      "gap": 1.6
+    },
+    {
+      "id": "yard-e3",
+      "name": "Block E3",
+      "x": 146,
+      "y": 166,
+      "cols": 7,
+      "rows": 3,
+      "maxTier": 3,
+      "slotW": 12.4,
+      "gap": 1.6
     }
   ],
   "rtgUnits": [
@@ -560,11 +600,28 @@
     }
   ],
   "trailers": [
-    { "id": "trailer-1", "x": 224, "y": 56, "angle": 0, "kind": "yard" },
-    { "id": "trailer-2", "x": 224, "y": 44, "angle": 0, "kind": "yard" },
-    { "id": "trailer-3", "x": 250, "y": 212, "angle": 1.5708, "kind": "yard" }
+    {
+      "id": "trailer-1",
+      "x": 224,
+      "y": 56,
+      "angle": 0,
+      "kind": "yard"
+    },
+    {
+      "id": "trailer-2",
+      "x": 224,
+      "y": 44,
+      "angle": 0,
+      "kind": "yard"
+    },
+    {
+      "id": "trailer-3",
+      "x": 250,
+      "y": 212,
+      "angle": 1.5708,
+      "kind": "yard"
+    }
   ],
-
   "truckSpots": [
     {
       "id": "truck-in-1",

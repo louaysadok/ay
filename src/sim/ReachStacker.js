@@ -50,7 +50,7 @@ export class ReachStacker extends Vehicle {
 
   /** Boom tip position in local space (metres). */
   boomTipLocal() {
-    const pivotX = this.spec.length * (this.spec.boomPivotX ?? 0.56);
+    const pivotX = this.spec.length * ((this.spec.boomPivotX ?? 0.56) - 0.5);   // art is authored from the rear; origin = centre
     const len = this.boomLength();
     return { x: pivotX + Math.cos(this.boomAngle) * len, y: Math.sin(this.boomAngle) * len };
   }

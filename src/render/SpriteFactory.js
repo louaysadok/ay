@@ -11,8 +11,10 @@
  */
 import { roundRectPath, makeRng, rgba, shade, mixHex, TAU, clamp, clamp01 } from '../engine/Utils.js';
 
-export const SPRITE_PPU = 16;      // machinery
-export const CARGO_PPU = 18;       // containers / pallets
+export const SPRITE_PPU = 32;      // machinery (oversampled: the camera
+                                   // frames machines at 7-12 px/m, so sprites
+                                   // downscale instead of showing their pixels)
+export const CARGO_PPU = 36;       // containers / pallets
 
 const PALETTE = {
   hull: '#1d5a86', hullDark: '#12405f', deck: '#2f7fae',
@@ -62,17 +64,18 @@ function grad(ctx, x, y, w, h, stops, vertical = true) {
 
 /** Fictional shipping lines (no real-world trademarks). */
 export const CONTAINER_LIVERS = [
-  { id: 'northport', name: 'NORTHPORT', body: '#1b6aa5', roof: '#2a83c4', text: '#eaf4fb', accent: '#0f4e7e' },
-  { id: 'azura', name: 'AZURA', body: '#0f9d8e', roof: '#18bda9', text: '#eafaf7', accent: '#0a7268' },
-  { id: 'kestrel', name: 'KESTREL', body: '#d0562b', roof: '#e8743f', text: '#fff3ec', accent: '#a03d1c' },
-  { id: 'bluemax', name: 'BLUEMAX', body: '#2b4fa0', roof: '#3d68c2', text: '#eef3ff', accent: '#1d3775' },
-  { id: 'orion', name: 'ORION', body: '#c9424b', roof: '#e05a63', text: '#fff0f1', accent: '#9a2b32' },
-  { id: 'meridian', name: 'MERIDIAN', body: '#f0b429', roof: '#ffc94f', text: '#3a2b05', accent: '#c08c12' },
-  { id: 'cobalt', name: 'COBALT', body: '#4b5563', roof: '#5f6b7a', text: '#eef2f6', accent: '#343b45' },
-  { id: 'sanmar', name: 'SANMAR', body: '#e8eef3', roof: '#f8fbfd', text: '#173146', accent: '#c4d2dc' },
-  { id: 'harbour', name: 'HARBOUR', body: '#7a3fa8', roof: '#9358c2', text: '#f6efff', accent: '#592a80' },
-  { id: 'venta', name: 'VENTA', body: '#1f7a4d', roof: '#2c9a63', text: '#eafbf1', accent: '#145536' }
+  { id: 'northport', name: 'NORTHPORT', body: '#15639e', roof: '#1d7cc0', text: '#eaf4fb', accent: '#0d4772' },
+  { id: 'azura', name: 'AZURA', body: '#0b8f80', roof: '#12b3a0', text: '#eafaf7', accent: '#076257' },
+  { id: 'kestrel', name: 'KESTREL', body: '#c8481f', roof: '#e2632f', text: '#fff3ec', accent: '#8f3213' },
+  { id: 'bluemax', name: 'BLUEMAX', body: '#22439a', roof: '#3159c4', text: '#eef3ff', accent: '#16306f' },
+  { id: 'orion', name: 'ORION', body: '#bd3039', roof: '#d7424b', text: '#fff0f1', accent: '#8a1e25' },
+  { id: 'meridian', name: 'MERIDIAN', body: '#e8a413', roof: '#f7bd33', text: '#332303', accent: '#b07c07' },
+  { id: 'cobalt', name: 'COBALT', body: '#3d4653', roof: '#4e5866', text: '#eef2f6', accent: '#282e38' },
+  { id: 'sanmar', name: 'SANMAR', body: '#dbe4eb', roof: '#eef4f8', text: '#12334a', accent: '#b3c2ce' },
+  { id: 'harbour', name: 'HARBOUR', body: '#6d34a0', roof: '#8647bb', text: '#f6efff', accent: '#4d2176' },
+  { id: 'venta', name: 'VENTA', body: '#1a7145', roof: '#248f5a', text: '#eafbf1', accent: '#114d2f' }
 ];
+
 
 const containerCache = new Map();
 
@@ -96,13 +99,13 @@ export function containerSprite({ size = 40, liver = 0, condition = 0, id = 'POA
   const r = 3.2;
 
   // body with roof gradient (light from the north-west)
-  fillRR(ctx, x, y, w, h, r, grad(ctx, x, y, w, h, [[0, shade(lv.roof, .06)], [.45, lv.roof], [1, shade(lv.body, -.1)]]));
+  fillRR(ctx, x, y, w, h, r, grad(ctx, x, y, w, h, [[0, shade(lv.roof, .04)], [.5, lv.body], [1, shade(lv.body, -.16)]]));
   strokeRR(ctx, x + .5, y + .5, w - 1, h - 1, r, rgba('#040d15', .38), 1);
 
   // corrugated roof ribs
   ctx.save();
   rr(ctx, x, y, w, h, r); ctx.clip();
-  ctx.globalAlpha = .16;
+  ctx.globalAlpha = .24;
   ctx.strokeStyle = '#03121c';
   ctx.lineWidth = 1;
   const step = 0.28 * ppu;
@@ -148,11 +151,13 @@ export function containerSprite({ size = 40, liver = 0, condition = 0, id = 'POA
   ctx.textAlign = 'left';
   ctx.globalAlpha = 1;
 
-  // roof hash marks along the middle (spreader alignment aid)
-  ctx.globalAlpha = .2; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(x + w * .5, y + 3); ctx.lineTo(x + w * .5, y + h - 3);
-  ctx.stroke();
+  // spreader alignment ticks near each end (kept off the branding band)
+  ctx.globalAlpha = .22; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+  for (const fx of [x + w * .16, x + w * .84]) {
+    ctx.beginPath();
+    ctx.moveTo(fx, y + 3); ctx.lineTo(fx, y + h - 3);
+    ctx.stroke();
+  }
   ctx.globalAlpha = 1;
   ctx.restore();
 
@@ -163,7 +168,7 @@ export function containerSprite({ size = 40, liver = 0, condition = 0, id = 'POA
   ctx.globalAlpha = 1;
 
   // highlight rim (light from NW)
-  ctx.globalAlpha = .22;
+  ctx.globalAlpha = .14;
   ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
   rr(ctx, x + .6, y + .6, w - 1.2, h - 1.2, r); ctx.stroke();
   ctx.globalAlpha = 1;
@@ -292,31 +297,31 @@ function machine(type, def) {
 }
 
 /* ------------------------------------------------------- shared paintbits -- */
-/** Wheel seen from above: tyre + rim + tread, squashY compress along X. */
-function wheel(ctx, cx, cy, r, { twin = false, rim = '#9aa7b2', dark = '#1e252b', tread = true } = {}) {
-  const rx = r * .62, ry = r;
-  const draw = (ox) => {
-    ctx.beginPath(); ctx.ellipse(cx + ox, cy, rx, ry, 0, 0, TAU);
-    ctx.fillStyle = dark; ctx.fill();
+/**
+ * Tyre seen from above. Machines roll along +X, so the tread is long in X and
+ * narrow across Y; `twin` fits a dual-tyre pair side by side across Y.
+ */
+function wheel(ctx, cx, cy, r, { twin = false, dark = '#1e252b', tread = true } = {}) {
+  const hl = r, hw = r * .5;
+  const one = (oy) => {
+    const top = cy + oy - hw;
+    fillRR(ctx, cx - hl, top, hl * 2, hw * 2, hw * .6,
+      grad(ctx, 0, top, 0, top + hw * 2, [[0, '#3b464f'], [.5, '#171d22'], [1, '#0b0f13']]));
     if (tread) {
       ctx.save();
-      ctx.beginPath(); ctx.ellipse(cx + ox, cy, rx, ry, 0, 0, TAU); ctx.clip();
-      ctx.globalAlpha = .45; ctx.strokeStyle = '#0a0f13'; ctx.lineWidth = 1;
-      for (let i = -ry; i <= ry; i += 2.6) {
-        ctx.beginPath(); ctx.moveTo(cx + ox - rx, cy + i); ctx.lineTo(cx + ox + rx, cy + i); ctx.stroke();
+      rr(ctx, cx - hl, top, hl * 2, hw * 2, hw * .6); ctx.clip();
+      ctx.globalAlpha = .6; ctx.strokeStyle = '#05080b'; ctx.lineWidth = Math.max(1, r * .08);
+      for (let i = -hl + r * .16; i < hl; i += r * .30) {
+        ctx.beginPath(); ctx.moveTo(cx + i, top); ctx.lineTo(cx + i + r * .12, top + hw * 2); ctx.stroke();
       }
       ctx.restore();
-      ctx.globalAlpha = 1;
     }
-    ctx.beginPath(); ctx.ellipse(cx + ox, cy, rx * .5, ry * .48, 0, 0, TAU);
-    ctx.fillStyle = rim; ctx.fill();
-    ctx.beginPath(); ctx.ellipse(cx + ox, cy, rx * .18, ry * .17, 0, 0, TAU);
-    ctx.fillStyle = dark; ctx.fill();
-    ctx.globalAlpha = .35; ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.ellipse(cx + ox - rx * .2, cy - ry * .3, rx * .22, ry * .18, 0, 0, TAU); ctx.fill();
+    // light catches the north edge of the sidewall
+    ctx.globalAlpha = .3; ctx.fillStyle = '#ffffff';
+    fillRR(ctx, cx - hl * .72, top + hw * .12, hl * 1.44, Math.max(1, hw * .16), 1, '#ffffff');
     ctx.globalAlpha = 1;
   };
-  if (twin) { draw(-rx * .85); draw(rx * .85); } else draw(0);
+  if (twin) { one(-hw * 1.05); one(hw * 1.05); } else one(0);
 }
 
 /** Yellow/black hazard stripes filling a rect. */
@@ -443,49 +448,83 @@ function drawForklift(ctx, L, W, ppu) {
  */
 function drawReachStacker(ctx, L, W, ppu) {
   const cy = W * .5;
-  const x0 = L * .06, x1 = L * .97;
-  const bl = x1 - x0;
+  const x0 = L * .05, x1 = L * .97, bl = x1 - x0;
+  const body = (y, h) => grad(ctx, 0, y, 0, y + h, [[0, '#55aadd'], [.38, '#2b7db3'], [1, '#14507a']]);
+  const dx0 = x0 + ppu * .72, dx1 = x1 - ppu * .5, dl = dx1 - dx0;
 
-  // chassis deck
-  fillRR(ctx, x0, cy - W * .40, bl, W * .80, 3.4,
-    grad(ctx, 0, cy - W * .40, 0, cy + W * .40, [[0, '#f4f9fd'], [.45, '#dde8f0'], [1, '#bcccd9']]));
-  // rear engine deck + exhaust
-  ctx.globalAlpha = .5; ctx.fillStyle = '#8ea0ae';
-  fillRR(ctx, x0, cy - W * .34, bl * .30, W * .68, 2, '#93a5b3');
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = '#2f3a43';
-  ctx.beginPath(); ctx.arc(x0 + bl * .12, cy - W * .26, ppu * .11, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.arc(x0 + bl * .12, cy + W * .26, ppu * .11, 0, TAU); ctx.fill();
-  // counterweight
-  fillRR(ctx, x0 - ppu * .28, cy - W * .40, ppu * .42, W * .80, 2, '#414d57');
-  hazard(ctx, x0 - ppu * .24, cy - W * .36, ppu * .16, W * .72);
+  // tyres first, the bodywork sits over them like fenders
+  for (const s of [-1, 1]) {
+    wheel(ctx, x0 + bl * .21, cy + s * W * .42, ppu * .56);
+    wheel(ctx, x0 + bl * .77, cy + s * W * .365, ppu * .62, { twin: true });
+  }
+  // frame
+  fillRR(ctx, x0 + ppu * .2, cy - W * .35, bl - ppu * .5, W * .70, 4, '#18222a');
 
-  // deck plating lines
-  ctx.globalAlpha = .22; ctx.strokeStyle = '#6f8595'; ctx.lineWidth = .9;
-  for (let i = 1; i < 8; i++) {
-    const xx = x0 + (bl / 8) * i;
-    ctx.beginPath(); ctx.moveTo(xx, cy - W * .38); ctx.lineTo(xx, cy - W * .12); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(xx, cy + W * .12); ctx.lineTo(xx, cy + W * .38); ctx.stroke();
+  // rear counterweight with hazard face
+  fillRR(ctx, x0 - ppu * .02, cy - W * .40, ppu * .72, W * .80, 5,
+    grad(ctx, x0, 0, x0 + ppu * .7, 0, [[0, '#26303a'], [1, '#4a5762']], false));
+  hazard(ctx, x0 + ppu * .05, cy - W * .35, ppu * .17, W * .70);
+
+  // left deck (cab side) and right deck (engine side) — boom runs between them
+  fillRR(ctx, dx0, cy - W * .38, dl, W * .28, 6, body(cy - W * .38, W * .28));
+  fillRR(ctx, dx0, cy + W * .10, dl, W * .28, 6, body(cy + W * .10, W * .28));
+  // engine hood louvres + exhaust (right deck, rear half)
+  ctx.save();
+  ctx.globalAlpha = .45; ctx.strokeStyle = '#08202f'; ctx.lineWidth = Math.max(1, ppu * .045);
+  for (let i = 0; i < 9; i++) {
+    const xx = dx0 + ppu * .22 + i * ppu * .17;
+    ctx.beginPath(); ctx.moveTo(xx, cy + W * .135); ctx.lineTo(xx, cy + W * .345); ctx.stroke();
+  }
+  ctx.restore();
+  ctx.fillStyle = '#222c34';
+  ctx.beginPath(); ctx.arc(dx0 + dl * .50, cy + W * .24, ppu * .12, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#7b8a96';
+  ctx.beginPath(); ctx.arc(dx0 + dl * .50, cy + W * .24, ppu * .06, 0, TAU); ctx.fill();
+  // hydraulic tank (right deck, forward half) + filler cap
+  fillRR(ctx, dx0 + dl * .60, cy + W * .125, dl * .26, W * .25, 4, '#2d3a45');
+  ctx.fillStyle = '#e8b023';
+  ctx.beginPath(); ctx.arc(dx0 + dl * .66, cy + W * .25, ppu * .07, 0, TAU); ctx.fill();
+  // radiator grille on the left deck, rear half
+  ctx.save();
+  ctx.globalAlpha = .4; ctx.strokeStyle = '#08202f'; ctx.lineWidth = Math.max(1, ppu * .04);
+  for (let i = 0; i < 7; i++) {
+    const xx = dx0 + ppu * .2 + i * ppu * .15;
+    ctx.beginPath(); ctx.moveTo(xx, cy - W * .35); ctx.lineTo(xx, cy - W * .13); ctx.stroke();
+  }
+  ctx.restore();
+
+  // boom bed: dark channel with the turntable boss the boom pivots on
+  fillRR(ctx, dx0, cy - W * .085, dl, W * .17, 3, '#0e161c');
+  ctx.globalAlpha = .35; ctx.strokeStyle = '#51606c'; ctx.lineWidth = 1;
+  for (let i = 0; i < 12; i++) {
+    const xx = dx0 + ppu * .3 + i * (dl - ppu * .6) / 11;
+    ctx.beginPath(); ctx.moveTo(xx, cy - W * .06); ctx.lineTo(xx, cy + W * .06); ctx.stroke();
   }
   ctx.globalAlpha = 1;
+  const px = L * .56;
+  const boss = ctx.createRadialGradient(px - ppu * .08, cy - ppu * .08, ppu * .03, px, cy, ppu * .34);
+  boss.addColorStop(0, '#c4d0d9'); boss.addColorStop(1, '#4b5864');
+  ctx.beginPath(); ctx.arc(px, cy, ppu * .34, 0, TAU); ctx.fillStyle = boss; ctx.fill();
+  ctx.strokeStyle = 'rgba(10,18,24,.7)'; ctx.lineWidth = 1.2; ctx.stroke();
+  ctx.fillStyle = '#26323b';
+  for (let k = 0; k < 6; k++) {
+    const an = k / 6 * TAU;
+    ctx.beginPath(); ctx.arc(px + Math.cos(an) * ppu * .26, cy + Math.sin(an) * ppu * .26, ppu * .03, 0, TAU); ctx.fill();
+  }
 
-  // hydraulic tank + toolboxes
-  fillRR(ctx, x0 + bl * .34, cy + W * .16, bl * .18, W * .2, 1.6, '#4b5864');
-  fillRR(ctx, x0 + bl * .56, cy + W * .18, bl * .14, W * .16, 1.6, '#5a6874');
+  // handrails along the outer edge of the right deck
+  ctx.globalAlpha = .55; ctx.strokeStyle = '#e8f1f7'; ctx.lineWidth = Math.max(1, ppu * .04);
+  ctx.beginPath(); ctx.moveTo(dx0 + ppu * .2, cy + W * .365); ctx.lineTo(dx1 - ppu * .3, cy + W * .365); ctx.stroke();
+  ctx.globalAlpha = 1;
 
-  // operator cab at the front-left corner
-  const cw = W * .40, cl = L * .20;
-  cabin(ctx, x1 - cl - ppu * .1, cy - W * .48, cl, cw);
-  beacon(ctx, x1 - cl * .5, cy - W * .46, ppu * .12);
+  // headlights
+  ctx.fillStyle = '#fff4c2';
+  for (const s of [-1, 1]) fillRR(ctx, x1 - ppu * .1, cy + s * W * .30 - ppu * .1, ppu * .12, ppu * .2, 1, '#fff4c2');
 
-  // wheels: 2 axles × twin wheels
-  wheel(ctx, x0 + bl * .20, cy - W * .47, ppu * .40, { twin: false });
-  wheel(ctx, x0 + bl * .20, cy + W * .47, ppu * .40);
-  wheel(ctx, x0 + bl * .80, cy - W * .47, ppu * .40);
-  wheel(ctx, x0 + bl * .80, cy + W * .47, ppu * .40);
-  // front axle beam
-  ctx.fillStyle = '#39454f';
-  fillRR(ctx, x0 + bl * .74, cy - W * .44, ppu * .16, W * .88, 1.4, '#39454f');
+  // operator cab: front-left, offset from the boom so the driver sees the load
+  const cl = ppu * 2.15, cw = W * .36;
+  cabin(ctx, x1 - cl - ppu * .22, cy - W * .43, cl, cw);
+  beacon(ctx, x1 - cl * .55, cy - W * .40, ppu * .11);
 }
 
 /* ----------------------------------------------------------- RTG CRANE --- */
@@ -499,75 +538,80 @@ function drawReachStacker(ctx, L, W, ppu) {
 function drawRTG(ctx, L, W, ppu) {
   const cx = L * .5, cy = W * .5;
   const base = L * .62;                       // girder separation along X
-  const girderT = ppu * .40;                  // girder thickness (X)
-  const legW = ppu * .44;
+  const girderT = ppu * .56;                  // box-girder width (X)
+  const legW = ppu * .56;
   const y0 = ppu * .30, y1 = W - ppu * .30;   // girder ends (span)
   const gx = [cx - base * .5, cx + base * .5];
+  const eyA = y0 + legW * .5, eyB = y1 - legW * .5;
 
-  // shadow of the portal footprint
-  ctx.globalAlpha = .16; ctx.fillStyle = '#04141f';
-  fillRR(ctx, cx - base * .5, cy - W * .5, base, W, 4, '#04141f');
-  ctx.globalAlpha = 1;
-
-  // ---- the two girders (run along Y) -------------------------------------
-  const drawGirder = (gX) => {
-    fillRR(ctx, gX - girderT * .5, y0, girderT, y1 - y0, 2,
-      grad(ctx, gX - girderT * .5, 0, gX + girderT * .5, 0, [[0, '#3f93c4'], [.45, '#20648c'], [1, '#123f5c']], false));
-    // top rail + highlight
-    ctx.globalAlpha = .5; ctx.fillStyle = '#e8f2f8';
-    ctx.fillRect(gX - girderT * .34, y0, Math.max(1.4, girderT * .16), y1 - y0);
-    ctx.globalAlpha = .3; ctx.fillStyle = '#cfe4f0';
-    ctx.fillRect(gX + girderT * .18, y0 + 2, Math.max(1, girderT * .1), y1 - y0 - 4);
-    ctx.globalAlpha = 1;
-    // trolley end stops
-    fillRR(ctx, gX - girderT * .62, y0 - ppu * .1, girderT * 1.24, ppu * .2, 1, '#e0a11a');
-    fillRR(ctx, gX - girderT * .62, y1 - ppu * .1, girderT * 1.24, ppu * .2, 1, '#e0a11a');
-  };
-  gx.forEach(drawGirder);
-
-  // ---- legs + bogies at the four corners ---------------------------------
-  for (const gX of gx) {
-    for (const ey of [y0 + legW * .5, y1 - legW * .5]) {
-      // leg column
-      fillRR(ctx, gX - legW * .5, ey - legW * .5, legW, legW, 1.6,
-        grad(ctx, gX - legW * .5, 0, gX + legW * .5, 0, [[0, '#1d5478'], [.45, '#3684b0'], [1, '#123d59']], false));
-      // X-brace between the legs of one side
-      ctx.globalAlpha = .45; ctx.strokeStyle = '#14435f'; ctx.lineWidth = Math.max(1, ppu * .07);
-      ctx.beginPath();
-      ctx.moveTo(gX - legW * .46, ey - legW * .46); ctx.lineTo(gX + legW * .46, ey + legW * .46); ctx.stroke();
-      ctx.globalAlpha = 1;
-      // bogie plate + 2 wheels (axle along Y: wheel squashed along X)
-      fillRR(ctx, gX - ppu * .52, ey - ppu * .34, ppu * 1.04, ppu * .68, 2, '#39454f');
-      wheel(ctx, gX - ppu * .30, ey, ppu * .28);
-      wheel(ctx, gX + ppu * .30, ey, ppu * .28);
+  // ---- bogie beams: one per side of the span, rolling along X on 8 tyres ----
+  for (const ey of [eyA, eyB]) {
+    fillRR(ctx, gx[0] - ppu * .78, ey - legW * .52, base + ppu * 1.56, legW * 1.04, 5,
+      grad(ctx, 0, ey - legW * .52, 0, ey + legW * .52, [[0, '#56636e'], [.5, '#2c3842'], [1, '#1a232b']]));
+    for (const gX of gx) {
+      wheel(ctx, gX - ppu * .30, ey, ppu * .44);
+      wheel(ctx, gX + ppu * .30, ey, ppu * .44);
     }
   }
 
-  // ---- machine house outside the portal, on the -X side ------------------
-  const hl = base * .54, hw = W * .34;
-  const hx = gx[0] + girderT * .9, hy = y1 - hw - ppu * .1;
-  fillRR(ctx, hx, hy, hl, hw, 2.6,
-    grad(ctx, 0, hy, 0, hy + hw, [[0, '#f7fbfe'], [.5, '#e0eaf1'], [1, '#c2d3de']]));
-  ctx.globalAlpha = .5; ctx.strokeStyle = '#8fa6b6'; ctx.lineWidth = 1;
-  for (let i = 1; i < 6; i++) {
-    const xx = hx + (hl / 6) * i;
-    ctx.beginPath(); ctx.moveTo(xx, hy + hw * .1); ctx.lineTo(xx, hy + hw * .9); ctx.stroke();
+  // ---- the two box girders (run along Y) ----------------------------------
+  const drawGirder = (gX) => {
+    const gxL = gX - girderT * .5;
+    fillRR(ctx, gxL, y0, girderT, y1 - y0, 3,
+      grad(ctx, gxL, 0, gxL + girderT, 0, [[0, '#4aa0d4'], [.4, '#2476aa'], [1, '#124b72']], false));
+    // top rail
+    ctx.globalAlpha = .75; ctx.fillStyle = '#eef6fb';
+    ctx.fillRect(gX - girderT * .08, y0 + legW, Math.max(1.4, girderT * .12), y1 - y0 - legW * 2);
+    // handrail posts along both edges
+    ctx.globalAlpha = .4; ctx.fillStyle = '#e8f2f8';
+    for (let yy = y0 + legW * 1.1; yy < y1 - legW; yy += ppu * .55) {
+      ctx.fillRect(gxL + 1, yy, Math.max(1.4, ppu * .06), Math.max(1.4, ppu * .06));
+      ctx.fillRect(gxL + girderT - 1 - Math.max(1.4, ppu * .06), yy, Math.max(1.4, ppu * .06), Math.max(1.4, ppu * .06));
+    }
+    ctx.globalAlpha = 1;
+    // hazard-striped trolley end stops
+    hazard(ctx, gxL - ppu * .04, y0 + legW * .72, girderT + ppu * .08, ppu * .22, '#1b1b1b');
+    hazard(ctx, gxL - ppu * .04, y1 - legW * .72 - ppu * .22, girderT + ppu * .08, ppu * .22, '#1b1b1b');
+    strokeRR(ctx, gxL + .5, y0 + .5, girderT - 1, y1 - y0 - 1, 3, 'rgba(6,20,30,.55)', 1);
+  };
+  gx.forEach(drawGirder);
+
+  // ---- leg heads (portal knuckles) over each bogie -----------------------
+  for (const gX of gx) {
+    for (const ey of [eyA, eyB]) {
+      fillRR(ctx, gX - legW * .58, ey - legW * .58, legW * 1.16, legW * 1.16, 3,
+        grad(ctx, gX - legW * .58, 0, gX + legW * .58, 0, [[0, '#3a8dc0'], [.5, '#1f6a9c'], [1, '#0f4466']], false));
+      ctx.globalAlpha = .55; ctx.strokeStyle = '#0c3047'; ctx.lineWidth = Math.max(1, ppu * .06);
+      ctx.beginPath();
+      ctx.moveTo(gX - legW * .5, ey - legW * .5); ctx.lineTo(gX + legW * .5, ey + legW * .5);
+      ctx.moveTo(gX + legW * .5, ey - legW * .5); ctx.lineTo(gX - legW * .5, ey + legW * .5);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ---- power house on the first girder, near the end that holds the legs --
+  const hl = ppu * 1.7, hw = ppu * 2.5;
+  const hx = gx[0] - hl * .55, hy = y1 - legW * 1.5 - hw;
+  fillRR(ctx, hx, hy, hl, hw, 4,
+    grad(ctx, hx, 0, hx + hl, 0, [[0, '#f4f8fb'], [1, '#c7d6e1']], false));
+  strokeRR(ctx, hx + .5, hy + .5, hl - 1, hw - 1, 4, 'rgba(20,40,55,.55)', 1.2);
+  ctx.globalAlpha = .5; ctx.strokeStyle = '#8aa1b2'; ctx.lineWidth = Math.max(1, ppu * .04);
+  for (let i = 1; i < 11; i++) {
+    const yy = hy + (hw / 11) * i;
+    ctx.beginPath(); ctx.moveTo(hx + hl * .12, yy); ctx.lineTo(hx + hl * .88, yy); ctx.stroke();
   }
   ctx.globalAlpha = 1;
-  // exhaust stacks
-  ctx.fillStyle = '#2f3a43';
-  ctx.beginPath(); ctx.arc(hx + hl * .82, hy + hw * .2, ppu * .12, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.arc(hx + hl * .82, hy + hw * .8, ppu * .12, 0, TAU); ctx.fill();
-  // maintenance walkway along the far girder
-  ctx.globalAlpha = .45; ctx.fillStyle = '#8b98a3';
-  fillRR(ctx, gx[0] + girderT * .9, y0 + ppu * .1, base - girderT * 1.8, ppu * .5, 1, '#8b98a3');
-  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#2b363f';
+  ctx.beginPath(); ctx.arc(hx + hl * .5, hy + hw * .12, ppu * .12, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#6f808d';
+  ctx.beginPath(); ctx.arc(hx + hl * .5, hy + hw * .12, ppu * .06, 0, TAU); ctx.fill();
 
-  // ---- beacons ----------------------------------------------------------
-  beacon(ctx, gx[1] + girderT * .1, cy - W * .46, ppu * .13);
-  beacon(ctx, gx[1] + girderT * .1, cy + W * .46, ppu * .13);
+  // ---- beacons -------------------------------------------------------------
+  beacon(ctx, gx[1], eyA, ppu * .13);
+  beacon(ctx, gx[1], eyB, ppu * .13);
   ctx.fillStyle = PALETTE.beaconRed;
-  ctx.beginPath(); ctx.arc(gx[0] - girderT * .1, cy - W * .46, ppu * .1, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(gx[0], eyA, ppu * .1, 0, TAU); ctx.fill();
 }
 
 /* ------------------------------------------------- MOBILE HARBOUR CRANE --- */
@@ -837,7 +881,7 @@ export function drawAttachment(ctx, type, st = {}, ppu = SPRITE_PPU, dims = {}) 
   if (type === 'rtg') {
     const t = clamp(st.trolleyPos ?? .25, -1, 1);           // -1..1 across the span (Y)
     const cx = L * .5, cym = W * .5;
-    const girderT = ppu * .40;
+    const girderT = ppu * .56;
     const base = L * .62;
     const gx0 = cx - base * .5, gx1 = cx + base * .5;
     const y0 = ppu * .30 + girderT * .5, y1 = W - ppu * .30 - girderT * .5;
@@ -896,40 +940,62 @@ export function drawAttachment(ctx, type, st = {}, ppu = SPRITE_PPU, dims = {}) 
   }
 
   if (type === 'harborcrane') {
+    // Top view of a luffing boom: luffing changes the horizontal reach, so the
+    // boom is drawn straight ahead with its length equal to the sim's radius
+    // (the hook is at the tip — exactly where cargo is lifted).
     const pivotX = dims.pivotX ?? L * .46, pivotY = cy;
-    const angle = st.boomAngle ?? 0;
-    const reel = clamp01(st.boomExtend ?? .35);           // 0 = luffed up, 1 = extended
-    const boomLen = (L * .5) + (L * .85) * reel;
-    const boomW = ppu * .46;
+    const radius = st.radius ?? 10;
+    const boomLen = Math.max(ppu * 4, radius * ppu);
+    const boomW = ppu * 1.05;
+    const hookDrop = clamp01(((st.hookDrop ?? 1.1) - 1.1) / 1.8);
     ctx.save();
     ctx.translate(pivotX, pivotY);
-    ctx.rotate(angle);
-    // lattice boom
-    fillRR(ctx, 0, -boomW * .5, boomLen, boomW, 1.4,
-      grad(ctx, 0, -boomW * .5, 0, boomW * .5, [[0, '#ffe377'], [.5, '#eec32c'], [1, '#b98f0d']]));
-    ctx.save();
-    rr(ctx, 0, -boomW * .5, boomLen, boomW, 1.4); ctx.clip();
-    ctx.globalAlpha = .5; ctx.strokeStyle = '#6b5007'; ctx.lineWidth = .9;
-    for (let i = 2; i < boomLen - 2; i += ppu * .8) {
-      ctx.beginPath(); ctx.moveTo(i, -boomW * .5); ctx.lineTo(i + ppu * .4, boomW * .5); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(i + ppu * .4, -boomW * .5); ctx.lineTo(i, boomW * .5); ctx.stroke();
-    }
-    ctx.restore();
-    ctx.globalAlpha = 1;
-    ctx.globalAlpha = .3; ctx.fillStyle = '#fff';
-    ctx.fillRect(2, -boomW * .30, boomLen - 4, Math.max(1, boomW * .12));
-    ctx.globalAlpha = 1;
-    // hoist trolley on the boom + hook block hanging from it
-    const hx = boomLen * clamp01(st.hoistHeight ?? .8);
-    fillRR(ctx, hx - ppu * .35, -boomW * .85, ppu * .7, boomW * 1.7, 1.2, '#2f3b45');
-    ctx.globalAlpha = .7; ctx.strokeStyle = '#101c25'; ctx.lineWidth = Math.max(1, ppu * .06);
-    ctx.beginPath(); ctx.moveTo(hx, boomW * .5); ctx.lineTo(hx, boomW * .5 + ppu * (st.hookDrop ?? .6)); ctx.stroke();
-    ctx.globalAlpha = 1;
-    const hookY = boomW * .5 + ppu * (st.hookDrop ?? .6);
+    // boom foot (heel pin) and luffing ram
     ctx.fillStyle = '#2b3740';
-    fillRR(ctx, hx - ppu * .42, hookY - ppu * .34, ppu * .84, ppu * .68, 1.4, '#2f3b45');
+    ctx.beginPath(); ctx.arc(0, 0, ppu * .55, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#4b5a66';
+    ctx.beginPath(); ctx.arc(0, 0, ppu * .34, 0, TAU); ctx.fill();
+    // lattice boom: two chords + zig-zag bracing, tapering to the tip
+    const tipW = boomW * .55;
+    const chord = (sign) => {
+      ctx.beginPath();
+      ctx.moveTo(0, sign * boomW * .5);
+      ctx.lineTo(boomLen, sign * tipW * .5);
+    };
+    ctx.fillStyle = grad(ctx, 0, -boomW * .5, 0, boomW * .5, [[0, '#ffe377'], [.5, '#eec32c'], [1, '#b98f0d']]);
+    ctx.globalAlpha = .38;
+    ctx.beginPath();
+    ctx.moveTo(0, -boomW * .5); ctx.lineTo(boomLen, -tipW * .5);
+    ctx.lineTo(boomLen, tipW * .5); ctx.lineTo(0, boomW * .5); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = '#d9a914'; ctx.lineWidth = Math.max(1.6, ppu * .09);
+    chord(-1); ctx.stroke(); chord(1); ctx.stroke();
+    ctx.strokeStyle = '#8a6a0a'; ctx.lineWidth = Math.max(1, ppu * .05);
+    const step = ppu * .9;
+    ctx.beginPath();
+    for (let x = 0, k = 0; x < boomLen - step * .5; x += step, k++) {
+      const w0 = (boomW + (tipW - boomW) * (x / boomLen)) * .5;
+      const w1 = (boomW + (tipW - boomW) * ((x + step) / boomLen)) * .5;
+      const sgn = k % 2 ? 1 : -1;
+      ctx.moveTo(x, sgn * w0); ctx.lineTo(x + step, -sgn * w1);
+      ctx.moveTo(x, -w0); ctx.lineTo(x, w0);
+    }
+    ctx.stroke();
+    // pendant ropes from the A-frame to the boom head
+    ctx.strokeStyle = 'rgba(20,30,38,.75)'; ctx.lineWidth = Math.max(1, ppu * .05);
+    ctx.beginPath(); ctx.moveTo(-ppu * 1.4, 0); ctx.lineTo(boomLen, 0); ctx.stroke();
+    // head sheaves
+    ctx.fillStyle = '#2b3740';
+    fillRR(ctx, boomLen - ppu * .5, -ppu * .5, ppu * .9, ppu * 1.0, 1.4, '#2b3740');
+    ctx.fillStyle = '#6a7a87';
+    for (const dy of [-.22, .22]) { ctx.beginPath(); ctx.arc(boomLen - ppu * .05, dy * ppu, ppu * .17, 0, TAU); ctx.fill(); }
+    // hook block hanging at the tip; it grows a little as it is lowered
+    const hs = ppu * (.62 + hookDrop * .16);
+    fillRR(ctx, boomLen + ppu * .1 - hs * .5, -hs * .5, hs, hs, 1.4, '#2f3b45');
     ctx.fillStyle = PALETTE.yellow;
-    ctx.fillRect(hx - ppu * .46, hookY - ppu * .38, ppu * .92, Math.max(1.4, ppu * .1));
+    ctx.fillRect(boomLen + ppu * .1 - hs * .5, -hs * .5, hs, Math.max(1.4, ppu * .1));
+    ctx.fillStyle = '#ffb020';
+    ctx.beginPath(); ctx.arc(boomLen + ppu * .1, 0, ppu * .13, 0, TAU); ctx.fill();
     ctx.restore();
     return;
   }
@@ -969,7 +1035,8 @@ export function drawMachine(ctx, type, st = {}, x = 0, y = 0, angle = 0, scale =
   ctx.drawImage(sp.shadow, -sp.drawW / 2 + 6, -sp.drawH / 2 + 7, sp.drawW, sp.drawH);
   ctx.globalAlpha = (ctx.globalAlpha ?? 1) / .45;
   ctx.drawImage(sp.canvas, -sp.drawW / 2, -sp.drawH / 2, sp.drawW, sp.drawH);
-  ctx.translate(-sp.drawW / 2 + sp.pad, -sp.drawH / 2 + sp.pad);
+  ctx.translate(-sp.drawW / 2 + sp.pad / sp.ppu, -sp.drawH / 2 + sp.pad / sp.ppu);
+  ctx.scale(1 / sp.ppu, 1 / sp.ppu);          // attachments are authored in sprite pixels
   drawAttachment(ctx, type, st, sp.ppu, dims);
   ctx.restore();
 }

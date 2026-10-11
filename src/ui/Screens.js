@@ -22,6 +22,8 @@ const MODE_META = {
   academy: { titleKey: 'mission.list.title.academy', subKey: 'mission.list.sub.academy', icon: 'cap' }
 };
 
+const SELF_ACTIONS = new Set(['continue', 'newgame', 'career', 'academy', 'free', 'settings', 'codex', 'back', 'exit']);
+
 export class Screens {
   constructor(opts) {
     Object.assign(this, opts);           // i18n, settings, save, missions, mentor, progression, audio, bus, game, machines, lessons, career, saveManager
@@ -59,7 +61,9 @@ export class Screens {
 
   dispatch(action, el) {
     this.audio?.play?.('ui_click');
-    this.bus?.emit('ui:action', { action });
+    // Screens handles its own navigation below; re-emitting those would bounce
+    // off main.js' router (which calls dispatch again) and recurse forever.
+    if (!SELF_ACTIONS.has(action)) this.bus?.emit('ui:action', { action });
     switch (action) {
       case 'continue': return this.game.continueSession();
       case 'newgame': return this.confirmNewGame();
@@ -105,12 +109,9 @@ export class Screens {
 
   renderBootArt() {
     const logo = document.getElementById('boot-logo');
-    if (logo && !logo.childElementCount) {
-      const c = SF.brandMark();
-      logo.appendChild(c);
-    }
+    if (logo && !logo.childElementCount) logo.appendChild(spriteNode(SF.brandMark()));
     const mark = document.getElementById('brand-mark');
-    if (mark && !mark.childElementCount) mark.appendChild(SF.brandMark());
+    if (mark && !mark.childElementCount) mark.appendChild(spriteNode(SF.brandMark()));
     const tip = document.getElementById('boot-tip');
     if (tip) {
       const n = 1 + Math.floor(Math.random() * 5);
@@ -1047,6 +1048,9 @@ export class Screens {
 }
 
 /* ------------------------------------------------------------------ helpers */
+/** Sprite factories return `{canvas}` wrappers in some cases and bare canvases in others. */
+function spriteNode(spr) { return spr?.canvas || spr; }
+
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }

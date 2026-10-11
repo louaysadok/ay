@@ -39,7 +39,7 @@ export class DialoguePanel {
       options: document.getElementById('dlg-options'),
       close: document.getElementById('dlg-close'),
       role: this.layer?.querySelector('.dlg-name i'),
-      name: this.layer?.querySelector('.dlg-name')
+      name: this.layer?.querySelector('.dlg-name b')
     };
     this.els.close?.addEventListener('click', () => this.hide());
     this.layer?.addEventListener('click', (e) => { if (e.target === this.layer) this.hide(); });

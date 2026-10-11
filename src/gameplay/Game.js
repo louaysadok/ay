@@ -20,12 +20,24 @@ import { Progression } from './Progression.js';
 import { createMachine } from './createMachine.js';
 import { clamp, dist, fmtTime, rgba } from '../engine/Utils.js';
 
+/**
+ * Parked positions. The yard is stacked 3 rows deep per block, so machines
+ * belong in the aisles between blocks (or straddling one, in the RTG's case).
+ */
 const SPAWN = {
-  forklift: { x: 150, y: 150, angle: -Math.PI / 2 },
-  reachstacker: { x: 214, y: 108, angle: 0 },
-  rtg: { x: 96, y: 150, angle: Math.PI / 2 },
+  forklift: { x: 139, y: 141.5, angle: 0 },
+  reachstacker: { x: 139, y: 103.5, angle: 0 },
+  rtg: { x: 98, y: 94.1, angle: 0 },            // gantry straddling Block N1
   harborcrane: { x: 68, y: 46, angle: 0 },
-  tractor: { x: 246, y: 40, angle: Math.PI }
+  tractor: { x: 240, y: 50, angle: Math.PI }
+};
+
+/**
+ * Pixels per metre for a machine when it takes the cab: big iron needs to be
+ * seen from further back to be useful, the forklift sits closer.
+ */
+const FRAME_ZOOM = {
+  forklift: 15, tractor: 14, reachstacker: 11.5, rtg: 9.5, harborcrane: 8
 };
 
 export class Game {
@@ -41,7 +53,7 @@ export class Game {
       attachments: null, save: this.save
     });
     this.scoring = new ScoringSystem({ terminal: null, settings: this.settings, i18n: this.i18n });
-    this.progression = new Progression({ save: this.save, bus: this.bus, i18n: this.i18n, missions: this.career, machines: this.machines });
+    this.progression = new Progression({ save: this.save, bus: this.bus, i18n: this.i18n, missions: this.career, lessons: this.lessons, machines: this.machines });
     this.freeSetup = { ...this.save.profile.freeSetup };
     this.lastResult = null;
     this.canSwitch = false;
@@ -184,7 +196,7 @@ export class Game {
     this.hud?.setMachines(this.canSwitch ? this.progression.machinesAvailable() : [type], type);
     this.touch?.setMachine(v);
     const cam = this.world?.camera;
-    if (cam) cam.snapTo(v.x, v.y, type === 'rtg' ? 3.2 : type === 'harborcrane' ? 3.6 : 5.2);
+    if (cam) cam.snapTo(v.x, v.y, FRAME_ZOOM[type] ?? 9.4);
     if (!silent) {
       this.audio?.startEngine?.(v);
       this.bus.emit('player:machine', { machine: type, vehicle: v });
@@ -226,6 +238,7 @@ export class Game {
 
   /* =================================================================== loop */
   update(dt) {
+    if (this.state === 'menu' || this.state === 'boot') { this._attract(dt); return; }
     if (this.state !== 'playing' && this.state !== 'paused') return;
     const { terminal, camera, attachments } = this.world;
     const v = this.player;
@@ -272,6 +285,23 @@ export class Game {
 
     // edges are per-step: consume them once the frame's actions are resolved
     this.input.endStep();
+  }
+
+  /**
+   * Menu backdrop: a slow, looping fly-over of the live terminal (quay, ships,
+   * then down into the yard). Costs nothing extra: it is the normal renderer.
+   */
+  _attract(dt) {
+    const w = this.world;
+    if (!w) return;
+    this._attractT = (this._attractT || 0) + dt;
+    const t = this._attractT * 0.035;                 // one loop ~ 3 minutes
+    const cam = w.camera;
+    const px = 186 + Math.sin(t * 2 * Math.PI) * 112;
+    const py = 56 + (Math.cos(t * 2 * Math.PI * 0.5) * 0.5 + 0.5) * 62;
+    cam.x = px; cam.y = py;
+    cam.zoom = cam.targetZoom = 6.2;
+    w.terminal.update?.(dt);
   }
 
   render(alpha, dt, paused) {
@@ -337,7 +367,7 @@ export class Game {
     const cam = this.world.camera;
     if (input.isDown('zoomIn')) cam.zoomBy(dt * 1.4);
     if (input.isDown('zoomOut')) cam.zoomBy(-dt * 1.4);
-    if (input.pressed('recenter')) cam.snapTo(this.player.x, this.player.y, 5.2);
+    if (input.pressed('recenter')) cam.snapTo(this.player.x, this.player.y, FRAME_ZOOM[this.player?.type] ?? 9.4);
     const panX = input.axis('panLeft', 'panRight');
     const panY = input.axis('panUp', 'panDown');
     if (panX || panY) cam.manual.x += panX * dt * 26;

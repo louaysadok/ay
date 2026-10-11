@@ -138,7 +138,7 @@ export class Terminal {
     }
 
     // ---- seed the yard with an initial stock of containers ---------------
-    this._seedYard(0.46);
+    this._seedYard(0.72);
 
     // ---- pedestrians (safety NPCs) -------------------------------------
     this.pedestrians = (L.pedestrians || []).map((p) => ({
@@ -153,22 +153,33 @@ export class Terminal {
 
   /**
    * Fill part of the yard so the terminal looks alive from the first frame.
-   * Stacks are built bottom-up with realistic random tiers 1..maxTier.
+   * Stacks are built bottom-up; a real yard is stacked, not scattered, so the
+   * tier distribution is biased toward two and three high with the occasional
+   * single-high row left for the next crane move.
    */
-  _seedYard(fill = 0.45) {
+  _seedYard(fill = 0.72) {
     const rng = makeRng(4242);
+    const LIVERS = 10;
     for (const blk of this.layout.yardBlocks) {
+      // a block belongs mostly to one or two operators: pick a dominant livery
+      // and let each bay keep or swap it, so the yard reads as organised stacks
+      const base = rng.int(0, LIVERS - 1);
       for (let bay = 0; bay < blk.cols; bay++) {
+        const bayLiver = rng.bool(0.62) ? base : rng.int(0, LIVERS - 1);
         for (let row = 0; row < blk.rows; row++) {
+          // lanes between blocks stay clear, slots inside a block fill up
           if (rng() > fill) continue;
-          const tiers = rng.int(1, Math.max(2, blk.maxTier - 1));
-          let size = rng.bool(0.72) ? 40 : 20;
+          const maxSafe = Math.max(2, blk.maxTier - 1);
+          const roll = rng();
+          const tiers = roll < 0.18 ? 1 : roll < 0.62 ? 2 : Math.min(3, maxSafe);
+          const size = rng.bool(0.72) ? 40 : 20;
+          const liver = rng.bool(0.82) ? bayLiver : rng.int(0, LIVERS - 1);
           for (let t = 0; t < tiers; t++) {
             const slot = this.slotAt(blk.id, bay, row, t);
             if (!slot) break;
             const c = makeContainer({
               size: t === 0 ? size : (rng.bool(0.9) ? size : 20),
-              liver: rng.int(0, 9),
+              liver,
               condition: rng.bool(0.22) ? 1 : 0,
               empty: rng.bool(0.28)
             });

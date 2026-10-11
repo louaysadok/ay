@@ -60,7 +60,7 @@ export class HarborCrane extends Vehicle {
 
   /** Boom tip (hook) position in world space. */
   hookPoint() {
-    const pivotX = this.spec.length * 0.46;
+    const pivotX = this.spec.length * (0.46 - 0.5);   // slew centre, relative to machine centre
     const reach = this.radius;
     const p = this.localToWorld(pivotX + reach, 0);
     return { x: p.x, y: p.y, angle: this.angle };

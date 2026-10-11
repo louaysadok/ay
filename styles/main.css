@@ -143,8 +143,8 @@ h1,h2,h3,h4{font-weight:650;letter-spacing:-.01em}
     linear-gradient(180deg,var(--navy-950),#04121e 60%,#061a29);
 }
 .boot-inner{width:min(560px,86vw);text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
-.boot-logo{width:290px;height:78px}
-.boot-logo svg{width:100%;height:100%}
+.boot-logo{width:120px;height:120px}
+.boot-logo svg,.boot-logo canvas{display:block;width:100%;height:100%}
 .boot-tag{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--turq-300);font-weight:600}
 .boot-bar{width:100%;height:6px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:12px}
 .boot-bar>i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--turq-500),var(--turq-300));transition:width .35s ease}
@@ -156,16 +156,16 @@ h1,h2,h3,h4{font-weight:650;letter-spacing:-.01em}
 /* ---------------------------------------------------------------- menu ---- */
 .menu{
   background:
-    radial-gradient(1100px 560px at 82% 8%,rgba(43,143,196,.2),transparent 62%),
-    radial-gradient(900px 500px at 8% 96%,rgba(18,169,155,.18),transparent 60%),
-    linear-gradient(160deg,#071726,#03101c 70%);
+    radial-gradient(1100px 560px at 82% 8%,rgba(43,143,196,.18),transparent 62%),
+    radial-gradient(900px 500px at 8% 96%,rgba(18,169,155,.16),transparent 60%),
+    linear-gradient(180deg,rgba(4,14,24,.78),rgba(4,14,24,.55) 38%,rgba(3,12,20,.86) 100%);
   align-items:center;justify-content:center;padding:calc(18px + var(--safe-t)) 22px calc(18px + var(--safe-b));
 }
 .menu-wrap{width:min(1080px,96vw);max-height:100%;display:flex;flex-direction:column;gap:14px}
 .menu-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:14px}
 .brand-mark{width:66px;height:66px;flex:0 0 auto;filter:drop-shadow(0 6px 16px rgba(0,0,0,.45))}
-.brand-mark svg{width:100%;height:100%}
+.brand-mark svg,.brand-mark canvas{display:block;width:100%;height:100%}
 .brand-text h1{font-size:clamp(30px,5.4vw,46px);line-height:.94;font-weight:800;letter-spacing:.02em}
 .brand-text h1 span{color:var(--turq-400)}
 .brand-text p{font-size:clamp(11px,1.5vw,14px);letter-spacing:.42em;color:var(--grey-300);font-weight:600;margin-top:4px}
@@ -379,7 +379,7 @@ select:focus,.text-input:focus{border-color:var(--turq-400)}
 .ov-head h2{font-size:21px}
 .ov-head p{font-size:13px;color:var(--ink-mute);margin-top:3px}
 .ov-body{display:flex;flex-direction:column;gap:12px}
-.ov-foot{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.ov-foot{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;position:sticky;bottom:-20px;padding:12px 0 2px;background:linear-gradient(180deg,rgba(9,32,51,0),rgba(9,32,51,.97) 38%)}
 .ov-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
 .ov-stat{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 12px}
 .ov-stat .osl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--grey-400);font-weight:650}

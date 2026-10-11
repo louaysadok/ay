@@ -166,6 +166,8 @@ async function boot() {
   window.addEventListener('beforeunload', () => app.save.saveProfile(true));
 
   /* -------------------------------------------------------------- start  */
+  // decide touch vs desktop layout up-front (not only after the first tap)
+  { const on = TouchControls.shouldEnable(app.settings); game.touchEnabled = on; document.body.classList.toggle('is-touch', on); }
   screens.mount();
   screens.bootProgress(1, 'boot.ready');
   setTimeout(() => {

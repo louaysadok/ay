@@ -152,8 +152,8 @@ export class Vehicle {
     let pushedX = 0, pushedY = 0;
     let worst = null;
     for (const h of this.hull) {
-      const p = this.localToWorld(h.dx, 0);
-      const res = term.collision.resolveCircle(p.x, p.y, h.r);
+      const p = this.localToWorld(h.dx, h.dy || 0);
+      const res = term.collision.resolveCircle(p.x, p.y, h.r, false, this.load || null);
       if (res.hit) {
         pushedX += res.x; pushedY += res.y;
         if (!worst || res.depth > worst.depth) worst = res;

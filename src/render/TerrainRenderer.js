@@ -8,7 +8,9 @@
  */
 import { makeRng, rgba, shade, TAU, clamp } from '../engine/Utils.js';
 
-export const GROUND_PPU = 4.6;      // pixels per metre for the baked ground
+export const GROUND_PPU = 9.4;      // pixels per metre for the baked ground
+                                    // matched to the default camera zoom so the
+                                    // terminal renders 1:1 instead of upscaled
 export const MINIMAP_PPU = 1.35;
 
 export class TerrainRenderer {
@@ -187,19 +189,33 @@ export class TerrainRenderer {
         // lane lines either side of the block row
         this.line(r.x, blk.y - 3.2, r.x + r.w, blk.y - 3.2, rgba('#e8b23a', .30), .16, [2.6, 2.6]);
         this.line(r.x, blk.y + blk.rows * 2.7 + 3.2, r.x + r.w, blk.y + blk.rows * 2.7 + 3.2, rgba('#e8b23a', .30), .16, [2.6, 2.6]);
-        // slot stripes at ground level
-        for (let bay = 0; bay < blk.cols; bay++) {
+        // bay separators + the block perimeter; worn, not drawn with a ruler
+        const top = blk.y, bot = blk.y + blk.rows * 2.7;
+        for (let bay = 0; bay <= blk.cols; bay++) {
           const x = blk.x + bay * (blk.slotW + blk.gap);
-          this.line(x, blk.y - 1.2, x, blk.y + blk.rows * 2.7 + 1.2, rgba('#0b1a24', .22), .2);
-          this.line(x + blk.slotW, blk.y - 1.2, x + blk.slotW, blk.y + blk.rows * 2.7 + 1.2, rgba('#0b1a24', .22), .2);
-          // block label
+          this.line(x, top, x, bot, rgba('#0b1a24', .2), .16);
+        }
+        this.line(blk.x, top, blk.x + blk.cols * (blk.slotW + blk.gap) - blk.gap, top, rgba('#eef5fa', .1), .14);
+        this.line(blk.x, bot, blk.x + blk.cols * (blk.slotW + blk.gap) - blk.gap, bot, rgba('#eef5fa', .1), .14);
+        // bay numbers along the top edge of the block, terminal-style
+        for (let bay = 0; bay < blk.cols; bay++) {
+          const x = blk.x + bay * (blk.slotW + blk.gap) + blk.slotW / 2;
           this.ctx.save();
-          this.ctx.fillStyle = 'rgba(235,244,250,.22)';
-          this.ctx.font = `700 ${this.m(1.5)}px "Segoe UI", system-ui, sans-serif`;
+          this.ctx.fillStyle = rgba('#eef5fa', .34);
+          this.ctx.font = `700 ${this.m(1.7)}px "Segoe UI", system-ui, sans-serif`;
           this.ctx.textAlign = 'center';
-          this.ctx.fillText(blk.name.toUpperCase(), this.m(x + blk.slotW / 2), this.m(blk.y - 2.1));
+          this.ctx.fillText(String(bay + 1), this.m(x), this.m(blk.y - 1.5));
           this.ctx.restore();
         }
+        // one block name per block, on the west end of the lane above it
+        this.ctx.save();
+        this.ctx.fillStyle = rgba('#eef5fa', .2);
+        this.ctx.font = `800 ${this.m(1.9)}px "Segoe UI", system-ui, sans-serif`;
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(blk.name.toUpperCase(), this.m(blk.x), this.m(blk.y - 5.2));
+        this.ctx.fillStyle = rgba('#eef5fa', .1);
+        this.ctx.fillRect(this.m(blk.x), this.m(blk.y - 4.4), this.m(blk.cols * (blk.slotW + blk.gap) - blk.gap), this.m(.24));
+        this.ctx.restore();
         // worn tyre arcs inside the lanes
         this.noise({ x: r.x, y: blk.y - 5, w: r.w, h: 4 }, '#1a2229', 60, [1, 3], .05);
       }

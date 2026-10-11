@@ -7,6 +7,14 @@
  */
 import { clamp } from './Utils.js';
 
+/**
+ * Annotation boxes that machines may drive through: surface markings, zones,
+ * restricted areas (which raise safety events instead of blocking) and
+ * pedestrian walkways.
+ */
+const NON_SOLID = new Set(['decal', 'marking', 'zone', 'dock', 'lane', 'trigger', 'restricted', 'walkway']);
+
+
 export const box = (x, y, w, h, meta = {}) => ({ x, y, w, h, ...meta });
 export const boxCenter = (x, y, w, h, meta = {}) => ({ x: x - w / 2, y: y - h / 2, w, h, ...meta });
 
@@ -146,7 +154,7 @@ export class CollisionWorld {
   }
 
   /** True if an axis-aligned box is free of obstacles (optionally ignoring some kinds). */
-  isFree(x, y, w, h, ignoreKinds = ['marking', 'zone', 'dock', 'lane', 'decal']) {
+  isFree(x, y, w, h, ignoreKinds = ['marking', 'zone', 'dock', 'lane', 'decal', 'restricted', 'walkway']) {
     const hits = this.queryRect({ x, y, w, h }, this._tmpB || (this._tmpB = []), (b) => !ignoreKinds.includes(b.kind));
     for (const b of hits) {
       if (b.x < x + w && b.x + b.w > x && b.y < y + h && b.y + b.h > y) return false;
@@ -159,11 +167,12 @@ export class CollisionWorld {
    * Returns a contact summary: { pushed:{x,y}, hit:bool, speedInto, box, nx, ny }
    * `vel` is used to compute how hard the impact was (for damage & safety scoring).
    */
-  resolveCircle(cx, cy, r, radiusIsSoft = false) {
+  resolveCircle(cx, cy, r, radiusIsSoft = false, ignoreCargo = null) {
     const cands = this.queryCircle(cx, cy, r, this._tmpC || (this._tmpC = []));
     let px = 0, py = 0, hitBox = null, bestDepth = 0, nx = 0, ny = 0;
     for (const b of cands) {
-      if (b.kind === 'decal' || b.kind === 'marking' || b.kind === 'zone' || b.kind === 'dock' || b.kind === 'lane' || b.kind === 'trigger') continue;
+      if (NON_SOLID.has(b.kind)) continue;
+      if (ignoreCargo && b.cargo === ignoreCargo) continue;   // a machine never collides with the load it carries
       const qx = clamp(cx, b.x, b.x + b.w);
       const qy = clamp(cy, b.y, b.y + b.h);
       let dx = cx - qx, dy = cy - qy;
@@ -189,7 +198,7 @@ export class CollisionWorld {
   touching(cx, cy, r, filter = null) {
     const cands = this.queryCircle(cx, cy, r, this._tmpD || (this._tmpD = []));
     for (const b of cands) {
-      if (b.kind === 'decal' || b.kind === 'marking' || b.kind === 'zone' || b.kind === 'trigger') continue;
+      if (NON_SOLID.has(b.kind)) continue;
       if (filter && !filter(b)) continue;
       const qx = clamp(cx, b.x, b.x + b.w), qy = clamp(cy, b.y, b.y + b.h);
       if ((cx - qx) ** 2 + (cy - qy) ** 2 <= r * r) return b;

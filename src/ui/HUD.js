@@ -404,9 +404,9 @@ export class HUD {
       // attachment + carried load drawn in the sprite frame, exactly like the world
       c.save();
       c.scale(scale, scale);
-      c.translate(-src.width / 2, -src.height / 2);
+      c.translate(-src.width / 2 + spr.pad, -src.height / 2 + spr.pad);   // skip the sprite's padding
       const st = v.drawState ? v.drawState() : {};
-      SF.drawAttachment(c, v.type, st, spr.ppu, spr);
+      SF.drawAttachment(c, v.type, st, spr.ppu, { L: spr.l * spr.ppu, W: spr.w * spr.ppu });
       if (v.load) {
         c.globalAlpha = 0.9;
         c.fillStyle = v.load.kind === 'container' ? '#c8862f' : '#8a6a3c';
