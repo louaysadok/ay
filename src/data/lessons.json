@@ -1,0 +1,220 @@
+{
+  "chapters": [
+    { "id": "induction", "title": "Chapter 1 — Induction", "machine": "forklift", "color": "#12a99b" },
+    { "id": "forklift", "title": "Chapter 2 — Forklift Operations", "machine": "forklift", "color": "#12a99b" },
+    { "id": "containers", "title": "Chapter 3 — Container Handling", "machine": "reachstacker", "color": "#2b8fc4" },
+    { "id": "gantry", "title": "Chapter 4 — Gantry & Ship Work", "machine": "rtg", "color": "#2b8fc4" },
+    { "id": "heavy", "title": "Chapter 5 — Heavy Lift", "machine": "harborcrane", "color": "#ffc53d" }
+  ],
+
+  "lessons": [
+    {
+      "id": "academy-welcome",
+      "chapter": "induction",
+      "order": 1,
+      "title": "Welcome to Northport",
+      "subtitle": "A walk around the terminal",
+      "machine": "forklift",
+      "requires": [],
+      "kind": "induction",
+      "timeLimit": null,
+      "xp": 60,
+      "credits": 120,
+      "brief": [
+        "Meet your instructor and learn the layout of Northport Terminal 1.",
+        "No lifting in this lesson — just get comfortable with the machine and the HUD."
+      ],
+      "dialogue": ["mentor.welcome", "mentor.welcome2", "mentor.safetyFirst", "mentor.hud", "mentor.hud2", "mentor.map"],
+      "goals": [
+        { "type": "axis", "axis": "engineOn", "op": "==", "value": true, "label": "Start the machine", "hint": "The machine is already running — press any control to confirm you are in the seat." },
+        { "type": "reach", "target": "pad:training-pad-1", "radius": 6, "label": "Drive to training pad 1", "hint": "Follow the turquoise marker. W forward, S reverse, A and D to steer." },
+        { "type": "reach", "target": "pad:training-pad-2", "radius": 6, "label": "Drive to training pad 2", "hint": "Swing around and drive across to pad 2. Take it slow." },
+        { "type": "reach", "target": "pad:training-pad-3", "radius": 6, "label": "Drive to training pad 3", "hint": "One more pad — reverse out, then forward again." }
+      ],
+      "success": "That is the layout. Familiar ground now — next we put the forks to work.",
+      "tips": ["Nothing in this lesson can be failed. Drive, look around, get used to the camera."]
+    },
+    {
+      "id": "academy-forklift-1",
+      "chapter": "forklift",
+      "order": 2,
+      "title": "Forklift Basics",
+      "subtitle": "Movement, steering and braking",
+      "machine": "forklift",
+      "requires": ["academy-welcome"],
+      "kind": "training",
+      "timeLimit": null,
+      "xp": 90,
+      "credits": 180,
+      "brief": [
+        "Get comfortable with the forklift: drive it, steer it, stop it and sound the horn.",
+        "Forks stay low for this whole lesson."
+      ],
+      "dialogue": ["mentor.forkliftIntro", "mentor.move", "mentor.steer", "mentor.brake", "mentor.safetyRules"],
+      "goals": [
+        { "type": "move", "distance": 45, "label": "Drive 45 m", "hint": "Hold W and steer with A and D." },
+        { "type": "reverse", "distance": 12, "label": "Reverse 12 m", "hint": "Hold S — the forklift steers with its rear wheels, so the tail swings." },
+        { "type": "stop", "speedBelow": 0.15, "label": "Come to a full stop", "hint": "Press Space (or release the throttle) until the speed reads zero." },
+        { "type": "horn", "count": 1, "label": "Sound the horn once", "hint": "H is the horn." },
+        { "type": "park", "where": "pad:training-pad-1", "label": "Finish parked on pad 1", "hint": "Line up with the pad and stop inside it." }
+      ],
+      "success": "You can drive it. Now let's make it lift.",
+      "tips": ["Braking distance grows with speed and load. Brake earlier than feels fair."]
+    },
+    {
+      "id": "academy-forklift-2",
+      "chapter": "forklift",
+      "order": 3,
+      "title": "Forks and Loads",
+      "subtitle": "Raising, picking up and setting down",
+      "machine": "forklift",
+      "requires": ["academy-forklift-1"],
+      "kind": "training",
+      "timeLimit": null,
+      "xp": 110,
+      "credits": 220,
+      "brief": [
+        "Learn the fork controls, then pick up a pallet and place it on the marked pad.",
+        "Forks enter the pallet openings — come in square and low."
+      ],
+      "dialogue": ["mentor.forks", "mentor.approachPallet", "mentor.liftLoad", "mentor.transport", "mentor.placeLoad"],
+      "goals": [
+        { "type": "axis", "axis": "forkHeight", "op": ">", "value": 1.0, "label": "Raise the forks to 1 m", "hint": "Hold R to raise the forks." },
+        { "type": "axis", "axis": "forkHeight", "op": "<", "value": 0.25, "label": "Lower the forks back down", "hint": "Hold F to lower them to the deck." },
+        { "type": "lift", "cargo": "pallet", "count": 1, "label": "Pick up a pallet", "hint": "Line the tines up with the pallet openings, forks low, then press E." },
+        { "type": "place", "where": "pad:training-pad-2", "label": "Set the pallet on pad 2", "hint": "Lower the forks over pad 2 until the pallet rests, then press E to release." }
+      ],
+      "success": "Forks, load, and a tidy set-down. That is the core of warehouse work.",
+      "tips": ["Never travel with the forks raised above 1.5 m — that is where tip-overs start."]
+    },
+    {
+      "id": "academy-forklift-3",
+      "chapter": "forklift",
+      "order": 4,
+      "title": "Warehouse Run",
+      "subtitle": "A full delivery with capacity checks",
+      "machine": "forklift",
+      "requires": ["academy-forklift-2"],
+      "kind": "job",
+      "timeLimit": 300,
+      "xp": 150,
+      "credits": 300,
+      "unlocks": "reachstacker",
+      "brief": [
+        "Deliver a pallet from the training area to the warehouse dock.",
+        "You will cross the south road and pass a pedestrian walkway — give way."
+      ],
+      "dialogue": ["mentor.capacity", "mentor.transport", "mentor.placeLoad", "mentor.nextStage"],
+      "goals": [
+        { "type": "lift", "cargo": "pallet", "count": 1, "label": "Lift a pallet" },
+        { "type": "deliver", "where": "zone:wh-d1", "label": "Deliver it to the warehouse dock", "hint": "The dock doors are on the red-striped apron at the west face of the warehouse." },
+        { "type": "clean", "events": 0, "label": "Complete with no safety events" }
+      ],
+      "success": "Delivered clean. The reach stacker is unlocked — that is your next machine.",
+      "tips": ["Capacity is printed on the machine panel. Check it before lifting anything unusual."]
+    },
+    {
+      "id": "academy-reachstacker-1",
+      "chapter": "containers",
+      "order": 5,
+      "title": "Reach Stacker Basics",
+      "subtitle": "Boom, spreader and twistlocks",
+      "machine": "reachstacker",
+      "requires": ["academy-forklift-3"],
+      "kind": "training",
+      "timeLimit": null,
+      "xp": 140,
+      "credits": 260,
+      "brief": [
+        "Meet the reach stacker: boom up and down, telescope out and in, and cycle the spreader.",
+        "Nothing to carry yet — learn the axes first."
+      ],
+      "dialogue": ["mentor.reachIntro", "mentor.reachControls"],
+      "goals": [
+        { "type": "axis", "axis": "boomAngle", "op": ">", "value": 0.35, "label": "Raise the boom", "hint": "Hold R." },
+        { "type": "axis", "axis": "boomAngle", "op": "<", "value": -0.25, "label": "Lower the boom", "hint": "Hold F." },
+        { "type": "axis", "axis": "boomExtend", "op": ">", "value": 0.7, "label": "Extend the boom fully", "hint": "Hold T to telescope out." },
+        { "type": "axis", "axis": "boomExtend", "op": "<", "value": 0.15, "label": "Retract the boom", "hint": "Hold G to telescope in." },
+        { "type": "cycle", "count": 1, "label": "Cycle the spreader 40 → 20 ft", "hint": "C cycles the spreader length." }
+      ],
+      "success": "You have the axes. Now put a box on the ground and lock onto it.",
+      "tips": ["Extend the boom only when the machine is stationary."]
+    },
+    {
+      "id": "academy-reachstacker-2",
+      "chapter": "containers",
+      "order": 6,
+      "title": "First Container",
+      "subtitle": "Lift, carry and stack a 20 ft box",
+      "machine": "reachstacker",
+      "requires": ["academy-reachstacker-1"],
+      "kind": "training",
+      "timeLimit": 420,
+      "xp": 180,
+      "credits": 340,
+      "brief": [
+        "Lift the loose 20 ft container on the apron and stack it in the yard block.",
+        "Watch the capacity chart: this machine lifts less in the second row."
+      ],
+      "dialogue": ["mentor.reachCapacity", "mentor.liftLoad", "mentor.transport", "mentor.placeLoad"],
+      "goals": [
+        { "type": "lift", "cargo": "container", "count": 1, "label": "Lift a container", "hint": "Cycle the spreader to the box size, lower the boom over the corners, then press E." },
+        { "type": "stack", "block": "yard-s2", "count": 1, "label": "Stack it in Block S2", "hint": "Drive into the lane beside Block S2 and lower the box into a free slot." },
+        { "type": "clean", "events": 0, "label": "No safety events" }
+      ],
+      "success": "Box stacked, spreader released, no damage. That is container handling.",
+      "tips": ["A 40 ft box straddling two 20 ft slots wastes yard space — keep boxes in their own bay."]
+    },
+    {
+      "id": "academy-rtg-1",
+      "chapter": "gantry",
+      "order": 7,
+      "title": "Gantry Crane Basics",
+      "subtitle": "Travel, trolley and hoist",
+      "machine": "rtg",
+      "requires": ["academy-reachstacker-2"],
+      "kind": "training",
+      "timeLimit": null,
+      "xp": 160,
+      "credits": 300,
+      "brief": [
+        "The RTG straddles its block. Learn to travel along it and trolley across it.",
+        "You will not leave the block in this lesson."
+      ],
+      "dialogue": ["mentor.rtgIntro", "mentor.rtgControls"],
+      "goals": [
+        { "type": "axis", "axis": "gantryTravel", "op": ">", "value": 8, "label": "Travel 8 m along the block", "hint": "W and S travel the gantry. It is slow — that is by design." },
+        { "type": "axis", "axis": "trolleyMoved", "op": ">", "value": 4, "label": "Trolley 4 m across the span", "hint": "T and G move the trolley across the block." },
+        { "type": "axis", "axis": "hoistHeight", "op": ">", "value": 0.8, "label": "Lower the hoist to container level", "hint": "F lowers the hoist, R raises it." }
+      ],
+      "success": "Axes mastered. Next: retrieve a box from the stack.",
+      "tips": ["Never trolley with the spreader close to the ground — a swing can drag a stack."]
+    },
+    {
+      "id": "academy-harbor-1",
+      "chapter": "heavy",
+      "order": 8,
+      "title": "Harbour Crane Basics",
+      "subtitle": "Luffing, hoisting and the radius chart",
+      "machine": "harborcrane",
+      "requires": ["academy-rtg-1"],
+      "kind": "training",
+      "timeLimit": null,
+      "xp": 220,
+      "credits": 420,
+      "brief": [
+        "The mobile harbour crane uses a hook and a luffing boom.",
+        "Capacity falls as you reach out — read the panel while you work the boom."
+      ],
+      "dialogue": ["mentor.harborIntro", "mentor.harborControls"],
+      "goals": [
+        { "type": "axis", "axis": "boomAngle", "op": ">", "value": 0.3, "label": "Raise the boom to maximum", "hint": "T raises the boom (luff), G lowers it." },
+        { "type": "axis", "axis": "boomAngle", "op": "<", "value": -0.45, "label": "Lower the boom to reach out", "hint": "G pays the boom out — watch the capacity figure drop." },
+        { "type": "axis", "axis": "hookDepth", "op": ">", "value": 0.8, "label": "Lower the hook", "hint": "F lowers the hook." },
+        { "type": "axis", "axis": "hookDepth", "op": "<", "value": 0.2, "label": "Raise the hook back up", "hint": "R raises the hook." }
+      ],
+      "success": "That is the heavy-lift machine. Use it whenever the RTG cannot reach.",
+      "tips": ["Radius and capacity are a straight trade. Short radius, big lift."]
+    }
+  ]
+}

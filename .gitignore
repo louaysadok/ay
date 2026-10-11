@@ -1,0 +1,11 @@
+# generated QA renders (huge vector dumps; regenerate with tools/scene-shot.mjs)
+/preview/
+# dependencies / build output
+/node_modules/
+/dist/
+/build/
+/out/
+# local scratch
+*.log
+*.tmp
+.DS_Store

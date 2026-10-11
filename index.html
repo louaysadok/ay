@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#071726">
+<meta name="description" content="Port Ops Simulator — learn and master container terminal machinery in a compact, fully offline 2D port simulation.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Port Ops Simulator</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23071726'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Port%20Ops%20Simulator%22%2C%22short_name%22%3A%22Port%20Ops%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22landscape%22%2C%22background_color%22%3A%22%23071726%22%2C%22theme_color%22%3A%22%23071726%22%7D">
+<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/game.css">
+<link rel="stylesheet" href="styles/ui.css">
+<link rel="stylesheet" href="styles/mobile.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ WORLD CANVAS ============ -->
+  <div id="stage">
+    <canvas id="game" aria-label="Port terminal view"></canvas>
+    <div id="stage-shade"></div>
+  </div>
+
+  <!-- ============ HUD ============ -->
+  <div id="hud" class="layer is-hidden" aria-live="polite">
+
+    <div class="hud-top">
+      <div class="hud-left">
+        <button class="chip chip-btn" id="hud-pause" title="Pause">
+          <span class="ico" data-icon="pause"></span><span class="chip-label" data-i18n="hud.pause">Pause</span>
+        </button>
+        <div class="mission-card" id="hud-mission">
+          <div class="mc-head">
+            <span class="mc-mode" id="hud-mode" data-i18n="mode.career">Career</span>
+            <span class="mc-name" id="hud-mission-name">—</span>
+          </div>
+          <div class="mc-obj"><span class="ico" data-icon="target"></span><span id="hud-objective">—</span></div>
+          <div class="mc-meter"><i id="hud-progress" style="width:0%"></i></div>
+          <div class="mc-foot">
+            <span id="hud-step">—</span>
+            <span id="hud-timer" class="mono">--:--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="stat-row">
+          <div class="chip stat" title="Credits"><span class="ico yellow" data-icon="credit"></span><b id="hud-credits" class="mono">0</b></div>
+          <div class="chip stat" title="Level"><span class="ico turq" data-icon="star"></span><b id="hud-level">1</b><span class="xp-mini"><i id="hud-xp" style="width:0%"></i></span></div>
+          <div class="chip stat warn" id="hud-alert" title="Safety alerts"><span class="ico" data-icon="warn"></span><b id="hud-alert-count" class="mono">0</b></div>
+        </div>
+        <div class="hud-buttons">
+          <button class="icon-btn" id="hud-mentor" title="Ask the Mentor" aria-label="Ask the Mentor"><span class="ico" data-icon="mentor"></span><span class="ib-label" data-i18n="hud.ask">Ask Mentor</span></button>
+          <button class="icon-btn" id="hud-map" title="Minimap (M)"><span class="ico" data-icon="map"></span></button>
+          <button class="icon-btn" id="hud-sound" title="Sound"><span class="ico" data-icon="sound"></span></button>
+          <button class="icon-btn" id="hud-help" title="Controls &amp; glossary (H)"><span class="ico" data-icon="help"></span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-minimap" id="hud-minimap">
+      <canvas id="minimap" width="360" height="240"></canvas>
+      <div class="mm-label" data-i18n="hud.minimap">Terminal</div>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="hud-controls" id="hud-controls"></div>
+      <div class="hud-center">
+        <div class="action-prompt is-hidden" id="action-prompt">
+          <span class="key" id="action-key">E</span>
+          <span class="ap-text" id="action-text">—</span>
+        </div>
+        <div class="hint-strip" id="hint-strip"></div>
+      </div>
+      <div class="hud-machines" id="hud-machines"></div>
+    </div>
+
+    <div class="mentor-nudge is-hidden" id="mentor-nudge">
+      <span class="ico turq" data-icon="mentor"></span>
+      <span id="mentor-nudge-text" data-i18n="mentor.nudge">Need a hand? Ask the Mentor.</span>
+      <button class="mini-btn" id="mentor-nudge-open" data-i18n="common.open">Open</button>
+    </div>
+  </div>
+
+  <!-- ============ TOUCH CONTROLS ============ -->
+  <div id="touch" class="layer is-hidden">
+    <div class="t-joystick" id="t-joystick"><div class="t-knob" id="t-knob"></div><div class="t-ring"></div></div>
+    <div class="t-pedals">
+      <button class="t-btn t-pedal" id="t-fwd"><span class="ico" data-icon="up"></span></button>
+      <button class="t-btn t-pedal" id="t-rev"><span class="ico" data-icon="down"></span></button>
+      <button class="t-btn t-brake" id="t-brake" data-i18n="hud.brake">Brake</button>
+    </div>
+    <div class="t-actions" id="t-actions"></div>
+    <div class="t-side">
+      <button class="t-btn t-round" id="t-mentor"><span class="ico" data-icon="mentor"></span></button>
+      <button class="t-btn t-round" id="t-pause"><span class="ico" data-icon="pause"></span></button>
+      <button class="t-btn t-round" id="t-horn"><span class="ico" data-icon="horn"></span></button>
+    </div>
+  </div>
+
+  <!-- ============ MENTOR DIALOGUE ============ -->
+  <div id="dialogue-layer" class="layer is-hidden">
+    <div class="dialogue" id="dialogue">
+      <div class="dlg-portrait">
+        <canvas id="mentor-portrait" width="256" height="256"></canvas>
+        <div class="dlg-name"><b data-i18n="mentor.name">Sam Kowalski</b><i data-i18n="mentor.role">Port Mentor</i></div>
+      </div>
+      <div class="dlg-body">
+        <div class="dlg-text" id="dlg-text"></div>
+        <div class="dlg-options" id="dlg-options"></div>
+      </div>
+      <button class="dlg-close" id="dlg-close" aria-label="Close"><span class="ico" data-icon="close"></span></button>
+    </div>
+  </div>
+
+  <!-- ============ SCREENS ============ -->
+  <div id="screens" class="layer">
+
+    <!-- BOOT / LOADING -->
+    <section id="screen-boot" class="screen show boot">
+      <div class="boot-inner">
+        <div class="boot-logo" id="boot-logo"></div>
+        <div class="boot-tag" data-i18n="boot.tagline">Container Terminal Operations Trainer</div>
+        <div class="boot-bar"><i id="boot-progress"></i></div>
+        <div class="boot-line" id="boot-status" data-i18n="boot.loading">Preparing the terminal…</div>
+        <div class="boot-tip" id="boot-tip"></div>
+      </div>
+      <div class="boot-foot mono" data-i18n="boot.footer">Offline simulation · No account required · Progress saved on this device</div>
+    </section>
+
+    <!-- MAIN MENU -->
+    <section id="screen-menu" class="screen menu">
+      <div class="menu-wrap">
+        <header class="menu-head">
+          <div class="brand">
+            <div class="brand-mark" id="brand-mark"></div>
+            <div class="brand-text">
+              <h1>PORT<span>OPS</span></h1>
+              <p data-i18n="menu.subtitle">SIMULATOR</p>
+            </div>
+          </div>
+          <div class="player-card" id="player-card">
+            <div class="pc-level"><span data-i18n="menu.level">Level</span> <b id="pc-level">1</b></div>
+            <div class="pc-title" id="pc-title">Trainee</div>
+            <div class="pc-xp"><i id="pc-xp" style="width:0%"></i></div>
+            <div class="pc-stats">
+              <span><span class="ico yellow" data-icon="credit"></span><b class="mono" id="pc-credits">0</b></span>
+              <span><span class="ico turq" data-icon="medal"></span><b class="mono" id="pc-medals">0</b></span>
+              <span><span class="ico" data-icon="clock"></span><b class="mono" id="pc-time">0h</b></span>
+            </div>
+          </div>
+        </header>
+
+        <nav class="menu-buttons" id="menu-buttons">
+          <button class="mbtn primary" data-action="continue">
+            <span class="ico" data-icon="play"></span>
+            <span class="mb-main" data-i18n="menu.continue">Continue</span>
+            <span class="mb-sub" id="continue-sub" data-i18n="menu.continue.sub">—</span>
+          </button>
+          <button class="mbtn" data-action="career">
+            <span class="ico turq" data-icon="route"></span>
+            <span class="mb-main" data-i18n="menu.career">Career</span>
+            <span class="mb-sub" data-i18n="menu.career.sub">Progress from trainee to terminal master</span>
+          </button>
+          <button class="mbtn" data-action="academy">
+            <span class="ico turq" data-icon="cap"></span>
+            <span class="mb-main" data-i18n="menu.academy">Academy</span>
+            <span class="mb-sub" data-i18n="menu.academy.sub">Guided lessons with the Port Mentor</span>
+          </button>
+          <button class="mbtn" data-action="free">
+            <span class="ico turq" data-icon="cube"></span>
+            <span class="mb-main" data-i18n="menu.free">Free Operations</span>
+            <span class="mb-sub" data-i18n="menu.free.sub">Relaxed sandbox — no timers, no pressure</span>
+          </button>
+          <div class="menu-row">
+            <button class="mbtn small" data-action="settings"><span class="ico" data-icon="gear"></span><span class="mb-main" data-i18n="menu.settings">Settings</span></button>
+            <button class="mbtn small" data-action="codex"><span class="ico" data-icon="book"></span><span class="mb-main" data-i18n="menu.codex">Field Manual</span></button>
+            <button class="mbtn small" data-action="newgame"><span class="ico" data-icon="refresh"></span><span class="mb-main" data-i18n="menu.newgame">New Game</span></button>
+            <button class="mbtn small danger" data-action="exit"><span class="ico" data-icon="exit"></span><span class="mb-main" data-i18n="menu.exit">Exit</span></button>
+          </div>
+        </nav>
+
+        <footer class="menu-foot">
+          <span class="mono" id="menu-version">v1.0</span>
+          <span class="dot-sep"></span>
+          <span data-i18n="menu.disclaimer">Simulation values are simplified for training and are not certified operating data.</span>
+        </footer>
+      </div>
+    </section>
+
+    <!-- MISSION / LESSON LIST -->
+    <section id="screen-list" class="screen list">
+      <header class="sub-head">
+        <button class="icon-btn back" data-action="back"><span class="ico" data-icon="back"></span></button>
+        <div class="sh-title">
+          <h2 id="list-title">Career</h2>
+          <p id="list-sub">—</p>
+        </div>
+        <div class="sh-right" id="list-right"></div>
+      </header>
+      <div class="list-body">
+        <aside class="list-side" id="list-side"></aside>
+        <div class="list-main"><div class="card-grid" id="list-cards"></div></div>
+      </div>
+    </section>
+
+    <!-- FREE OPERATIONS SETUP -->
+    <section id="screen-free" class="screen list">
+      <header class="sub-head">
+        <button class="icon-btn back" data-action="back"><span class="ico" data-icon="back"></span></button>
+        <div class="sh-title">
+          <h2 data-i18n="free.title">Free Operations</h2>
+          <p data-i18n="free.sub">Pick a machine and a shift type, then explore the terminal.</p>
+        </div>
+        <div class="sh-right"></div>
+      </header>
+      <div class="list-body">
+        <aside class="list-side">
+          <div class="side-card">
+            <h3 data-i18n="free.shift">Shift type</h3>
+            <div class="opt-list" id="free-shifts"></div>
+          </div>
+          <div class="side-card">
+            <h3 data-i18n="free.settings">Sandbox settings</h3>
+            <label class="switch"><input type="checkbox" id="free-jobs" checked><span data-i18n="free.jobs">Offer job board tasks</span></label>
+            <label class="switch"><input type="checkbox" id="free-traffic" checked><span data-i18n="free.traffic">Terminal traffic</span></label>
+            <label class="switch"><input type="checkbox" id="free-safety" checked><span data-i18n="free.safety">Safety scoring active</span></label>
+            <label class="switch"><input type="checkbox" id="free-wide"><span data-i18n="free.zones">Show helper overlays</span></label>
+          </div>
+        </aside>
+        <div class="list-main">
+          <h3 class="list-h3" data-i18n="free.machine">Choose your machine</h3>
+          <div class="card-grid" id="free-machines"></div>
+          <div class="free-launch">
+            <button class="btn primary big" id="free-start"><span class="ico" data-icon="play"></span><span data-i18n="free.start">Start Shift</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="screen-settings" class="screen list">
+      <header class="sub-head">
+        <button class="icon-btn back" data-action="back"><span class="ico" data-icon="back"></span></button>
+        <div class="sh-title">
+          <h2 data-i18n="settings.title">Settings</h2>
+          <p data-i18n="settings.sub">Audio, graphics, controls, language and save data.</p>
+        </div>
+        <div class="sh-right"><button class="btn" id="settings-reset-defaults" data-i18n="settings.defaults">Restore defaults</button></div>
+      </header>
+      <div class="list-body">
+        <div class="settings-grid" id="settings-grid"></div>
+      </div>
+    </section>
+
+    <!-- CODEX / FIELD MANUAL -->
+    <section id="screen-codex" class="screen list">
+      <header class="sub-head">
+        <button class="icon-btn back" data-action="back"><span class="ico" data-icon="back"></span></button>
+        <div class="sh-title">
+          <h2 data-i18n="codex.title">Field Manual</h2>
+          <p data-i18n="codex.sub">Controls, machinery specifications, safety rules and glossary.</p>
+        </div>
+        <div class="sh-right"></div>
+      </header>
+      <div class="list-body">
+        <aside class="list-side">
+          <div class="side-card">
+            <h3 data-i18n="codex.sections">Sections</h3>
+            <div class="opt-list" id="codex-tabs"></div>
+          </div>
+        </aside>
+        <div class="list-main"><div id="codex-body" class="codex-body"></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ OVERLAYS ============ -->
+  <div id="overlays" class="layer is-hidden"></div>
+
+  <!-- ============ TOASTS ============ -->
+  <div id="toasts" class="layer"></div>
+
+  <!-- ============ ROTATE NOTICE (mobile portrait) ============ -->
+  <div id="rotate-notice">
+    <div class="rn-inner">
+      <div class="rn-icon"><span class="ico" data-icon="rotate"></span></div>
+      <h3 data-i18n="rotate.title">Rotate your device</h3>
+      <p data-i18n="rotate.text">Port Ops Simulator uses a landscape terminal view.</p>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+<noscript><div style="color:#fff;font:16px system-ui;padding:24px">Port Ops Simulator requires JavaScript.</div></noscript>
+</body>
+</html>

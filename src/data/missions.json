@@ -1,0 +1,253 @@
+{
+  "career": {
+    "chapters": [
+      { "id": "induction", "title": "Chapter 1 — Induction", "unlockLevel": 1 },
+      { "id": "yard", "title": "Chapter 2 — Yard Operations", "unlockLevel": 2 },
+      { "id": "dock", "title": "Chapter 3 — Dock & Ship Work", "unlockLevel": 4 },
+      { "id": "senior", "title": "Chapter 4 — Senior Operations", "unlockLevel": 6 }
+    ],
+    "missions": [
+      {
+        "id": "career-induction-1",
+        "chapter": "induction",
+        "order": 1,
+        "title": "Shift Start",
+        "subtitle": "Pre-shift checks and a first look",
+        "machine": "forklift",
+        "requires": [],
+        "difficulty": 1,
+        "timeLimit": 420,
+        "xp": 80,
+        "credits": 160,
+        "brief": [
+          "Report to the training area for your first shift.",
+          "Do the walk-around, start the machine, and drive the apron to check the route."
+        ],
+        "objectives": [
+          { "type": "reach", "target": "area:maintenance", "radius": 16, "label": "Report to the maintenance area" },
+          { "type": "horn", "count": 1, "label": "Sound the horn before moving off" },
+          { "type": "reach", "target": "area:warehouse", "radius": 30, "label": "Drive the warehouse apron" },
+          { "type": "reach", "target": "area:gate", "radius": 16, "label": "Check the truck gate lanes" }
+        ],
+        "mentor": ["mentor.welcome", "mentor.safetyRules", "mentor.careerIntro"],
+        "tips": ["There is no load in this job. Get the route into your head: gate → yard → warehouse → quay."]
+      },
+      {
+        "id": "career-induction-2",
+        "chapter": "induction",
+        "order": 2,
+        "title": "Pallet Shuffle",
+        "subtitle": "Truck to warehouse",
+        "machine": "forklift",
+        "requires": ["career-induction-1"],
+        "difficulty": 1,
+        "timeLimit": 360,
+        "xp": 110,
+        "credits": 220,
+        "brief": [
+          "An inbound trailer at gate lane 1 is carrying mixed pallets.",
+          "Take one pallet from the trailer and place it at the warehouse dock."
+        ],
+        "objectives": [
+          { "type": "lift", "cargo": "pallet", "count": 1, "label": "Lift a pallet" },
+          { "type": "deliver", "where": "zone:wh-d1", "label": "Deliver it to the warehouse dock" },
+          { "type": "clean", "events": 0, "label": "Finish with no safety events" }
+        ],
+        "mentor": ["mentor.transport", "mentor.placeLoad"],
+        "tips": ["Watch the pedestrian walkway on the south road."]
+      },
+      {
+        "id": "career-yard-1",
+        "chapter": "yard",
+        "order": 3,
+        "title": "Yard Transfer",
+        "subtitle": "Two containers into Block E1",
+        "machine": "reachstacker",
+        "requires": ["career-induction-2"],
+        "difficulty": 2,
+        "timeLimit": 480,
+        "xp": 180,
+        "credits": 380,
+        "brief": [
+          "Two 20 ft boxes are loose on the south apron.",
+          "Stack both of them in Block E1. Use the first row, ground tier."
+        ],
+        "objectives": [
+          { "type": "lift", "cargo": "container", "count": 1, "label": "Lift a loose container" },
+          { "type": "stack", "block": "yard-e1", "count": 2, "label": "Stack 2 containers in Block E1" },
+          { "type": "clean", "events": 0, "label": "No safety events" }
+        ],
+        "mentor": ["mentor.reachCapacity"],
+        "tips": ["Line up with the block lane first, then extend the boom — never the other way round."]
+      },
+      {
+        "id": "career-yard-2",
+        "chapter": "yard",
+        "order": 4,
+        "title": "Housekeeping",
+        "subtitle": "Re-stack a messy row",
+        "machine": "reachstacker",
+        "requires": ["career-yard-1"],
+        "difficulty": 2,
+        "timeLimit": 540,
+        "xp": 220,
+        "credits": 420,
+        "brief": [
+          "Block S2 has been left in a mess by the previous shift — boxes at mixed heights.",
+          "Bring the block back to a clean two-high profile."
+        ],
+        "objectives": [
+          { "type": "liftAny", "count": 2, "label": "Re-handle 2 containers" },
+          { "type": "stack", "block": "yard-s2", "count": 2, "label": "Leave 2 containers stacked in Block S2" },
+          { "type": "damage", "max": 0, "label": "Do not damage cargo" }
+        ],
+        "mentor": ["mentor.reachControls"],
+        "tips": ["Only the top box of a column can be lifted. Plan the order before you start."]
+      },
+      {
+        "id": "career-dock-1",
+        "chapter": "dock",
+        "order": 5,
+        "title": "Quay Delivery",
+        "subtitle": "Yard to ship's side",
+        "machine": "reachstacker",
+        "requires": ["career-yard-2"],
+        "difficulty": 3,
+        "timeLimit": 600,
+        "xp": 260,
+        "credits": 520,
+        "brief": [
+          "The ship-to-shore gantry has discharged a run of boxes onto the apron.",
+          "Move one of them back into the yard so the quay stays clear."
+        ],
+        "objectives": [
+          { "type": "lift", "cargo": "container", "count": 1, "label": "Lift a container from the quay" },
+          { "type": "stack", "block": "yard-n1", "count": 1, "label": "Stack it in Block N1" },
+          { "type": "clean", "events": 0, "label": "No safety events" }
+        ],
+        "mentor": ["mentor.dockWork"],
+        "tips": ["The striped band along the quay is a working zone. Keep your machine out of it unless you are picking up or setting down."]
+      },
+      {
+        "id": "career-dock-2",
+        "chapter": "dock",
+        "order": 6,
+        "title": "Retrieve the Box",
+        "subtitle": "Find one specific container",
+        "machine": "reachstacker",
+        "requires": ["career-dock-1"],
+        "difficulty": 3,
+        "timeLimit": 600,
+        "xp": 300,
+        "credits": 600,
+        "brief": [
+          "A customer needs one specific unit out of Block N1.",
+          "Check the job card for the ID, dig it out and take it to the gate."
+        ],
+        "objectives": [
+          { "type": "liftId", "inBlock": "yard-n1", "count": 1, "label": "Retrieve the nominated container from Block N1" },
+          { "type": "deliver", "where": "zone:truck-in-3", "label": "Take it to outbound lane 3" },
+          { "type": "clean", "events": 0, "label": "No safety events" }
+        ],
+        "mentor": ["mentor.gateWork"],
+        "tips": ["The nominated container is the one marked with a gold marker. Anything on top of it must come off first."]
+      },
+      {
+        "id": "career-dock-3",
+        "chapter": "dock",
+        "order": 7,
+        "title": "Gantry Shift",
+        "subtitle": "Work the block with the RTG",
+        "machine": "rtg",
+        "requires": ["career-dock-2"],
+        "difficulty": 3,
+        "timeLimit": 660,
+        "xp": 340,
+        "credits": 700,
+        "unlocks": "harborcrane",
+        "brief": [
+          "Take the gantry crane over Block N1 for a shift.",
+          "Pull two boxes out of the stack and set them on the transfer lane."
+        ],
+        "objectives": [
+          { "type": "liftFromBlock", "block": "yard-n1", "count": 2, "label": "Lift 2 containers out of Block N1" },
+          { "type": "place", "where": "lane", "count": 2, "label": "Set both down on the transfer lane" },
+          { "type": "clean", "events": 0, "label": "No safety events" }
+        ],
+        "mentor": ["mentor.rtgControls"],
+        "tips": ["Travel first, trolley second, hoist last. Three axes, one at a time."]
+      },
+      {
+        "id": "career-senior-1",
+        "chapter": "senior",
+        "order": 8,
+        "title": "Heavy Lift",
+        "subtitle": "Out-of-gauge cargo at the berth",
+        "machine": "harborcrane",
+        "requires": ["career-dock-3"],
+        "difficulty": 4,
+        "timeLimit": 720,
+        "xp": 420,
+        "credits": 900,
+        "brief": [
+          "An out-of-gauge unit has arrived on the quay and the ship cannot take it by gantry.",
+          "Use the mobile harbour crane — mind the radius chart."
+        ],
+        "objectives": [
+          { "type": "lift", "cargo": "container", "count": 1, "label": "Hook up the out-of-gauge unit" },
+          { "type": "deliver", "where": "zone:wh-d2", "label": "Deliver it to warehouse dock 2" },
+          { "type": "damage", "max": 0, "label": "Do not damage the load" },
+          { "type": "clean", "events": 0, "label": "No safety events" }
+        ],
+        "mentor": ["mentor.harborControls"],
+        "tips": ["Lift close in, travel, then set down. Never travel with the boom extended far out."]
+      },
+      {
+        "id": "career-senior-2",
+        "chapter": "senior",
+        "order": 9,
+        "title": "Full Terminal Operation",
+        "subtitle": "Everything at once",
+        "machine": "reachstacker",
+        "requires": ["career-senior-1"],
+        "difficulty": 5,
+        "timeLimit": 900,
+        "xp": 600,
+        "credits": 1300,
+        "brief": [
+          "Peak shift. The gantry is landing boxes on the apron and the yard is filling up.",
+          "Clear the quay into the yard, then load the outbound trailer at the gate."
+        ],
+        "objectives": [
+          { "type": "lift", "cargo": "container", "count": 3, "label": "Handle 3 containers" },
+          { "type": "stack", "block": "yard-n2", "count": 2, "label": "Stack 2 in Block N2" },
+          { "type": "deliver", "where": "zone:truck-in-4", "label": "Load the outbound trailer in lane 4" },
+          { "type": "clean", "events": 0, "label": "No safety events" },
+          { "type": "damage", "max": 0, "label": "No cargo damage" }
+        ],
+        "mentor": ["mentor.dockWork", "mentor.gateWork"],
+        "tips": ["Plan every journey. An empty run across the terminal is wasted time and wasted score."]
+      }
+    ]
+  },
+  "freeJobs": [
+    { "id": "job-yard-move", "title": "Move a box", "text": "Take one container from the apron into a free yard slot.", "objectives": [{ "type": "lift", "cargo": "container", "count": 1 }, { "type": "stack", "block": "any", "count": 1 }], "credits": 90, "xp": 40, "machines": ["reachstacker", "rtg", "harborcrane"] },
+    { "id": "job-pallet-run", "title": "Pallet run", "text": "Deliver a pallet to the warehouse dock.", "objectives": [{ "type": "lift", "cargo": "pallet", "count": 1 }, { "type": "deliver", "where": "zone:wh-d1", "label": "Warehouse dock" }], "credits": 70, "xp": 30, "machines": ["forklift"] },
+    { "id": "job-gate-load", "title": "Gate loading", "text": "Load a container onto the outbound trailer in lane 3.", "objectives": [{ "type": "lift", "cargo": "container", "count": 1 }, { "type": "deliver", "where": "zone:truck-in-3" }], "credits": 110, "xp": 45, "machines": ["reachstacker", "rtg"] },
+    { "id": "job-rtg-shuffle", "title": "Block shuffle", "text": "Re-stack two containers inside one yard block.", "objectives": [{ "type": "liftFromBlock", "block": "any", "count": 2 }, { "type": "stack", "block": "any", "count": 2 }], "credits": 130, "xp": 55, "machines": ["rtg", "reachstacker"] },
+    { "id": "job-quay-clear", "title": "Keep the quay clear", "text": "Move a box off the quay apron into the yard.", "objectives": [{ "type": "lift", "cargo": "container", "count": 1 }, { "type": "stack", "block": "yard-n1", "count": 1 }], "credits": 120, "xp": 50, "machines": ["reachstacker", "harborcrane"] },
+    { "id": "job-heavy-hook", "title": "Heavy hook", "text": "Use the harbour crane to place a unit at the warehouse dock.", "objectives": [{ "type": "lift", "cargo": "container", "count": 1 }, { "type": "deliver", "where": "zone:wh-d2" }], "credits": 150, "xp": 65, "machines": ["harborcrane"] }
+  ],
+  "achievements": [
+    { "id": "first-shift", "name": "First Shift", "desc": "Complete your first mission.", "icon": "medal", "credits": 50 },
+    { "id": "academy-graduate", "name": "Academy Graduate", "desc": "Complete every Academy lesson.", "icon": "cap", "credits": 500 },
+    { "id": "clean-sweep", "name": "Clean Sweep", "desc": "Complete five missions with no safety events.", "icon": "shield", "credits": 300 },
+    { "id": "gold-standard", "name": "Gold Standard", "desc": "Earn a gold medal on any mission.", "icon": "medal", "credits": 300 },
+    { "id": "heavy-lifter", "name": "Heavy Lifter", "desc": "Move 50 containers.", "icon": "cube", "credits": 400 },
+    { "id": "smooth-operator", "name": "Smooth Operator", "desc": "Finish a mission with 100% equipment use.", "icon": "wrench", "credits": 250 },
+    { "id": "no-scratch", "name": "Not a Scratch", "desc": "Complete 10 missions without damaging anything.", "icon": "shield", "credits": 500 },
+    { "id": "terminal-master", "name": "Terminal Master", "desc": "Complete every career mission.", "icon": "star", "credits": 1500 },
+    { "id": "job-board", "name": "Regular Hand", "desc": "Complete 5 job board tasks in Free Operations.", "icon": "route", "credits": 250 },
+    { "id": "four-machines", "name": "Qualified on All", "desc": "Operate all four terminal machines.", "icon": "machines", "credits": 400 }
+  ]
+}
