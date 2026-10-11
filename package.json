@@ -15,12 +15,12 @@
     "smoke": "node tools/smoke.mjs",
     "art": "node tools/render-preview.mjs",
     "electron": "npm run bundle && electron desktop/main.cjs",
-    "electron:build": "npm run bundle && electron-builder --win --x64",
+    "electron:build": "npm run bundle && electron-builder --win --x64 --publish never",
     "cap:add:android": "npx cap add android",
     "cap:sync": "npm run bundle && npx cap sync android",
     "cap:open:android": "npx cap open android",
     "e2e": "node tools/e2e.mjs",
-    "electron:build:portable": "npm run bundle && electron-builder --win portable --x64",
+    "electron:build:portable": "npm run bundle && electron-builder --win portable --x64 --publish never",
     "android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug"
   },
   "engines": {
