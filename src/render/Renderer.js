@@ -564,10 +564,10 @@ export class Renderer {
       ctx.translate(0, -lift);
       ctx.globalAlpha = 0.5;
       ctx.fillStyle = '#f4f8fb';
-      ctx.font = '700 1.5px "Segoe UI", system-ui, sans-serif';
+      ctx.font = '700 1px "Segoe UI", system-ui, sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'top';
-      ctx.fillText(`\u00d7${tier + 1}`, w / 2 - 0.7, -h / 2 + 0.5);
+      ctx.fillText(`\u00d7${tier + 1}`, w / 2 - 0.5, -h / 2 + 0.35);
       ctx.restore();
     }
     ctx.restore();
