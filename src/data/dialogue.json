@@ -1,0 +1,272 @@
+{
+  "mentor.welcome": {
+    "en": "Morning! Sam Kowalski — I run the instructor desk here at Northport Terminal 1. You must be the new operator. Good, we need you.",
+    "fr": "Bonjour ! Sam Kowalski — je dirige le poste de formation ici, au terminal 1 de Northport. Vous devez être le nouvel opérateur. Parfait, on a besoin de vous.",
+    "ar": "صباح الخير! أنا سام كوالسكي — أُدير مكتب التدريب هنا في محطة نورثبورت رقم ١. لا بد أنك المشغّل الجديد. جيد، فنحن نحتاج إليك."
+  },
+  "mentor.welcome2": {
+    "en": "This terminal handles about nine hundred boxes a shift. Nothing moves unless somebody drives, lifts and stacks it. Today, that somebody is you.",
+    "fr": "Ce terminal traite environ neuf cents boîtes par poste. Rien ne bouge si personne ne conduit, ne lève et n'empile. Aujourd'hui, ce quelqu'un, c'est vous.",
+    "ar": "تتعامل هذه المحطة مع نحو تسعمائة حاوية في الوردية. لا شيء يتحرك ما لم يقد أحدهم ويرفع ويرصّ. واليوم، هذا الشخص هو أنت."
+  },
+  "mentor.safetyFirst": {
+    "en": "One rule before anything else: in this port, safe beats fast. Every time. A container you set down ten seconds later costs nothing. A dropped one costs everything.",
+    "fr": "Une règle avant tout : ici, la sécurité passe avant la vitesse. Toujours. Un conteneur posé dix secondes plus tard ne coûte rien. Un conteneur tombé coûte tout.",
+    "ar": "قاعدة واحدة قبل كل شيء: في هذا الميناء، الأمان يتقدّم على السرعة. في كل مرة. حاوية تُنزل بعد عشر ثوانٍ لا تكلّف شيئًا، أما حاوية تسقط فتكلّف كل شيء."
+  },
+  "mentor.hud": {
+    "en": "Take a look round the screen. Top-left is your job card — what you are doing and how far along you are. Top-right keeps your credits, your level and any safety alerts.",
+    "fr": "Regardez l'écran. En haut à gauche, votre fiche de mission : ce que vous faites et où vous en êtes. En haut à droite : vos crédits, votre niveau et les alertes de sécurité.",
+    "ar": "ألقِ نظرة على الشاشة. أعلى اليسار بطاقة عملك — ما تفعله ومقدار تقدّمك. وأعلى اليمين رصيدك ومستواك وتنبيهات السلامة."
+  },
+  "mentor.hud2": {
+    "en": "Bottom-left lists your machine's controls. Bottom-right is the machine panel: load, capacity and what the attachment is doing. And the little button marked Mento is me — press Q any time.",
+    "fr": "En bas à gauche, les commandes de votre machine. En bas à droite, le panneau machine : charge, capacité et état de l'accessoire. Et le petit bouton Mentor, c'est moi — appuyez sur Q à tout moment.",
+    "ar": "أسفل اليسار قائمة بأدوات التحكّم في آلتك. وأسفل اليمين لوحة الآلة: الحمل والسعة وما يفعله الملحق. والزرّ الصغير المسمّى «المرشد» هو أنا — اضغط Q في أي وقت."
+  },
+  "mentor.map": {
+    "en": "That is the whole terminal on the minimap: berths up top, container yard in the middle, warehouse and truck gate on the right, maintenance and training areas along the bottom.",
+    "fr": "Voilà tout le terminal en miniature : les postes à quai en haut, le parc à conteneurs au milieu, l'entrepôt et le portail camions à droite, la maintenance et la zone d'entraînement en bas.",
+    "ar": "هذه هي المحطة كاملة على الخريطة المصغّرة: الأرصفة في الأعلى، وساحة الحاويات في الوسط، والمخزن وبوابة الشاحنات على اليمين، ومناطق الصيانة والتدريب في الأسفل."
+  },
+  "mentor.forkliftIntro": {
+    "en": "This is a counterbalance forklift — three and a half tonnes of it, rated to lift two and a half. Forks in front, counterweight behind. That is what keeps the back wheels on the ground.",
+    "fr": "Voici un chariot élévateur à contrepoids — trois tonnes et demie, homologué pour lever deux tonnes et demie. Fourches devant, contrepoids derrière. C'est ce qui garde les roues arrière au sol.",
+    "ar": "هذه رافعة شوكية موازنة — وزنها ثلاثة أطنان ونصف، ومعدّلة لرفع اثنين ونصف. الشوكات في الأمام والثقل الموازن في الخلف، وهذا ما يُبقي العجلات الخلفية على الأرض."
+  },
+  "mentor.move": {
+    "en": "Let's start simple. W drives forward, S reverses, A and D steer. Space is the brake — and it is a real brake, use it, don't coast into things.",
+    "fr": "Commençons simplement. W avance, S recule, A et D dirigent. Espace, c'est le frein — un vrai frein, servez-vous en plutôt que de finir dans un obstacle.",
+    "ar": "لنبدأ ببساطة. W للأمام، وS للخلف، وA وD للتوجيه. والمفتاح Space هو الفرامل — وهي فرامل حقيقية، استخدمها ولا تدع الآلة تنزلق."
+  },
+  "mentor.steer": {
+    "en": "Notice the rear wheels do the steering on a forklift. The tail swings wide. Take your turns slowly and watch the counterweight — it is what people hit.",
+    "fr": "Remarquez que ce sont les roues arrière qui dirigent sur un chariot élévateur. L'arrière balaie large. Tournez lentement et surveillez le contrepoids.",
+    "ar": "لاحظ أن العجلات الخلفية هي التي توجّه الرافعة الشوكية، فيتأرجح مؤخّرها بعيدًا. خُذ المنعطفات ببطء وراقب الثقل الموازن — فهو أول ما يُصطدم به."
+  },
+  "mentor.brake": {
+    "en": "Good. Now try stopping from speed and feel how far it runs on. Loaded machines take longer — always brake earlier than feels necessary.",
+    "fr": "Bien. Essayez maintenant de vous arrêter lancé, et sentez la distance. Une machine chargée s'arrête plus loin — freinez toujours plus tôt que nécessaire.",
+    "ar": "أحسنت. جرّب الآن التوقف من سرعة وانظر كم تحتاج من مسافة. الآلات المحمّلة تحتاج مسافة أطول — لذا ابدأ الكبح مبكرًا أكثر مما تراه ضروريًا."
+  },
+  "mentor.forks": {
+    "en": "Forks are R to raise and F to lower. Travel with them low, maybe fifteen centimetres off the deck. High forks are how loads and mirrors get broken.",
+    "fr": "Les fourches : R pour monter, F pour descendre. Déplacez-vous fourches basses, à quinze centimètres du sol. Fourches hautes, c'est ainsi qu'on casse les charges.",
+    "ar": "الشوكات تُرفع بـ R وتُنزل بـ F. سِر بها منخفضة، نحو خمسة عشر سنتيمترًا عن الأرض. رفع الشوكات عاليًا هو سبب تكسير الأحمال والمرايا."
+  },
+  "mentor.approachPallet": {
+    "en": "See the pallet? Come in square, forks aligned with the openings, then ease forward until the tines are right through. Take it slowly — this is the part that goes wrong when you rush.",
+    "fr": "Vous voyez la palette ? Arrivez bien droit, fourches alignées avec les ouvertures, puis avancez doucement jusqu'à ce que les fourches traversent. Allez-y lentement.",
+    "ar": "أترى الطبلية؟ اقترب بمحاذاة مستقيمة بحيث تتحاذى الشوكات مع الفتحات، ثم تقدّم ببطء حتى تدخل الأسنان فيها. تمهّل — فهنا تحدث الأخطاء عند الاستعجال."
+  },
+  "mentor.liftLoad": {
+    "en": "Now lift. E picks up and sets down. Raise just enough to clear the deck, then tilt back — keep the load low and against the mast while you travel.",
+    "fr": "Levez. E sert à prendre et à poser. Montez juste ce qu'il faut pour dégager le sol, puis inclinez en arrière : gardez la charge basse et contre le mât.",
+    "ar": "الآن ارفع. المفتاح E يلتقط ويُنزل. ارفع قدر ما يبعد الحمل عن الأرض فقط، ثم مِل به للخلف — أبقِ الحمل منخفضًا ملاصقًا للعمود أثناء السير."
+  },
+  "mentor.transport": {
+    "en": "Nice and steady to the marked drop point. Slow before you get there, not when you arrive. Everything you carry has momentum you have to pay back.",
+    "fr": "Tranquillement jusqu'au point de dépose marqué. Ralentissez avant d'arriver, pas à l'arrivée. Chaque charge a une inertie à rendre.",
+    "ar": "بهدوء وثبات نحو نقطة الإنزال المحددة. أبطئ قبل أن تصل لا عند وصولك. فكل ما تحمله له زخم عليك أن تدفع ثمنه."
+  },
+  "mentor.placeLoad": {
+    "en": "Set it down square on the lines: lower until the load is resting, then reverse out straight. Do not drag the tines out sideways — that is how pallets tip.",
+    "fr": "Posez-la d'aplomb sur les repères : descendez jusqu'au contact, puis reculez tout droit. Ne retirez pas les fourches de biais.",
+    "ar": "أنزله مستقيمًا على الخطوط: اخفض حتى يستقر الحمل، ثم ارجع للخلف في خط مستقيم. لا تسحب الأسنان جانبيًا — فهكذا تنقلب الطباليات."
+  },
+  "mentor.capacity": {
+    "en": "That is the load chart. Lift capacity falls as the load centre moves forward, so a heavy pallet on the tips is a different job from the same pallet on the back. When in doubt, check the panel before you lift.",
+    "fr": "Voilà l'abaque de charge. La capacité chute quand le centre de gravité avance : une palette lourde au bout des fourches n'est pas la même opération qu'au talon.",
+    "ar": "هذا مخطط الحمل. تنخفض سعة الرفع كلما تقدّم مركز الحمل للأمام، لذا طبلية ثقيلة عند الأطراف ليست المهمة نفسها عند القاعدة. وعند الشك، افحص اللوحة قبل الرفع."
+  },
+  "mentor.safetyRules": {
+    "en": "Four habits: forks low when travelling. Horn at every blind corner. Never lift over a person. And stop for pedestrians — they always have right of way in this terminal.",
+    "fr": "Quatre habitudes : fourches basses en déplacement. Klaxon aux angles morts. Jamais de levage au-dessus d'une personne. Et priorité absolue aux piétons.",
+    "ar": "أربع عادات: الشوكات منخفضة أثناء السير. البوق عند كل منعطف مغلق. لا ترفع فوق أي شخص أبدًا. وتوقّف للمشاة — فلهم أولوية دائمة في هذه المحطة."
+  },
+  "mentor.damage": {
+    "en": "That is what a hard contact does — you can see the condition reading drop. Machinery is inspected before every shift, so keep it clean and keep it slow in tight places.",
+    "fr": "Voilà l'effet d'un choc : l'état de la machine a baissé. Le matériel est inspecté à chaque prise de poste : soyez propre et lent dans les endroits serrés.",
+    "ar": "هذا ما يفعله الارتطام القوي — ترى قراءة حالة الآلة تتراجع. تُفحص الآلات قبل كل وردية، فحافظ على نظافتها وخفّف السرعة في الأماكن الضيقة."
+  },
+  "mentor.zoneWarn": {
+    "en": "Careful — that striped zone is a working area. Cranes swing overhead, and gantry cranes travel through there. Pass through, do not park in it.",
+    "fr": "Attention — cette zone hachurée est une zone de travail. Les grues balancent au-dessus et les portiques y circulent. Traversez, ne vous y garez pas.",
+    "ar": "احترس — تلك المنطقة المخطّطة منطقة عمل. الروافع تتأرجح فوقها والرافعات الجسرية تعبر فيها. اعبر ولا تتوقف داخلها."
+  },
+  "mentor.pedNear": {
+    "en": "Pedestrian on the walkway. Ease off the throttle, give them the width, and sound the horn if they have not seen you.",
+    "fr": "Piéton sur le cheminement. Levez le pied, laissez-leur la place, et klaxonnez s'ils ne vous ont pas vu.",
+    "ar": "مشاة على الممر. خفّف الدعسة وأفسح لهم المجال، واستخدم البوق إن لم يلاحظوك."
+  },
+  "mentor.complete": {
+    "en": "That is a clean operation. Load delivered, nothing damaged, no incidents. That is exactly what a shift is supposed to look like.",
+    "fr": "Voilà une opération propre. Charge livrée, rien d'endommagé, aucun incident. C'est exactement à quoi doit ressembler un poste.",
+    "ar": "هذه عملية نظيفة. سُلّم الحمل، ولم يتضرّر شيء، ولم تقع حوادث. هكذا يجب أن تكون الوردية."
+  },
+  "mentor.nextStage": {
+    "en": "You have the basics. Next comes containers — bigger, heavier, and they need a spreader instead of forks. Let me know when you are ready and I will walk you onto the reach stacker.",
+    "fr": "Vous avez les bases. Ensuite, les conteneurs : plus gros, plus lourds, et avec un spreader au lieu des fourches. Quand vous voulez, je vous emmène sur le reach stacker.",
+    "ar": "أصبحت الأساسيات بيدك. التالي هو الحاويات — أكبر وأثقل، وتحتاج إسبريدر بدل الشوكات. أخبرني عندما تكون جاهزًا وسأواك إلى الرافعة الممتدة."
+  },
+  "mentor.reachIntro": {
+    "en": "Reach stacker. Telescopic boom, spreader on the end, forty-five tonnes. It travels down the lanes beside the stacks, and it lifts boxes from the first and second row.",
+    "fr": "Reach stacker. Flèche télescopique, spreader au bout, quarante-cinq tonnes. Il circule le long des allées et lève les boîtes en première et deuxième rangée.",
+    "ar": "الرافعة الممتدة. ذراع تلسكوبي، وإسبريدر في نهايته، وخمسة وأربعون طنًا. تسير في الممرات بجانب الأكوام، وترفع الحاويات من الصف الأول والثاني."
+  },
+  "mentor.reachControls": {
+    "en": "R and F lift the boom, T extends it, G retracts. C cycles the spreader between twenty and forty feet. E locks onto the container — four twistlocks, all four or nothing.",
+    "fr": "R et F lèvent la flèche, T l'étend, G la rétracte. C fait passer le spreader de 20 à 40 pieds. E verrouille le conteneur : quatre twistlocks, les quatre ou rien.",
+    "ar": "R وF يرفعان الذراع، وT يمدّه، وG يسحبه. والمفتاح C يبدّل الإسبريدر بين عشرين وأربعين قدمًا. وE يقفل على الحاوية — أربعة أقفال، إما الأربعة أو لا شيء."
+  },
+  "mentor.reachCapacity": {
+    "en": "Watch the capacity chart on this one. Forty-five tonnes in the first row, thirty-one in the second. Same box, different answer — that is the whole point of the chart.",
+    "fr": "Surveillez l'abaque : quarante-cinq tonnes en première rangée, trente et une en deuxième. Même boîte, réponse différente.",
+    "ar": "راقب مخطط السعة في هذه الآلة. خمسة وأربعون طنًا في الصف الأول وواحد وثلاثون في الثاني. الحاوية نفسها والنتيجة مختلفة — وهذا هو جوهر المخطط."
+  },
+  "mentor.rtgIntro": {
+    "en": "That is the RTG — rubber-tyred gantry. It straddles the whole block on rails, so it stacks containers four high without ever turning around. Slow, deliberate, and the backbone of the yard.",
+    "fr": "Voici le RTG — portique sur pneus. Il enjambe tout le bloc : il empile quatre conteneurs de haut sans jamais faire demi-tour. Lent, méthodique, essentiel au parc.",
+    "ar": "تلك هي الرافعة الجسرية على إطارات مطاطية. تمتدّ على الكتلة كاملة، فترصّ الحاويات أربعًا فوق بعضها دون أن تستدير. بطيئة ومتأنية، وهي عمود الساحة الفقري."
+  },
+  "mentor.rtgControls": {
+    "en": "W and S travel along the block. T and G trolley across the span. R and F work the hoist. Line the spreader up over the four corners before you lower — that is the whole skill.",
+    "fr": "W et S déplacent le portique le long du bloc. T et G font le chariot. R et F commandent le levage. Alignez le spreader sur les quatre coins avant de descendre.",
+    "ar": "W وS للتنقل داخل الكتلة، وT وG لتحريك العربة عرضيًا، وR وF للرافعة. حاذِ الإسبريدر فوق الزوايا الأربع قبل الإنزال — هنا تكمن المهارة كلها."
+  },
+  "mentor.harborIntro": {
+    "en": "And this is the mobile harbour crane. A hundred tonnes at short radius, and it falls away fast as you luff out. Hook work, heavy lifts, and the odd lift nobody else can reach.",
+    "fr": "Et voici la grue portuaire mobile. Cent tonnes à faible portée, et ça chute vite quand on déploie. Travail au crochet, levages lourds.",
+    "ar": "وهذه الرافعة المينائية المتحركة. مئة طن على نصف قطر قصير، وتتراجع السعة بسرعة كلما مددت الذراع. عمل الخطّاف والأحمال الثقيلة ورفعات لا تصل إليها آلة غيرها."
+  },
+  "mentor.harborControls": {
+    "en": "T and G luff the boom. R and F work the hook. Steady hands matter more here than anywhere else: a swinging load at twenty metres will not forgive a snatch.",
+    "fr": "T et G inclinent la flèche. R et F manœuvrent le crochet. La douceur compte plus ici qu'ailleurs : une charge qui oscille à vingt mètres ne pardonne pas.",
+    "ar": "T وG يرفعان الذراع ويخفضانه، وR وF يعملان الخطاف. الثبات هنا أهم من أي مكان آخر: حمل يتأرجح على عشرين مترًا لا يغفر حركة مفاجئة."
+  },
+  "mentor.askObjective": {
+    "en": "Your job right now: {objective}. {progress}",
+    "fr": "Votre tâche : {objective}. {progress}",
+    "ar": "مهمتك الآن: {objective}. {progress}"
+  },
+  "mentor.askNoObjective": {
+    "en": "No job card open at the moment. Open Career or Academy from the menu and I will give you something to do.",
+    "fr": "Aucune fiche de mission ouverte. Ouvrez Carrière ou Académie et je vous donnerai du travail.",
+    "ar": "لا توجد بطاقة عمل مفتوحة حاليًا. افتح «المسار المهني» أو «الأكاديمية» من القائمة وسأعطيك عملًا."
+  },
+  "mentor.askControls": {
+    "en": "On the {machine}: {controls}. Full list is on the bottom-left of the screen, or press H for the field manual.",
+    "fr": "Sur le {machine} : {controls}. La liste complète est en bas à gauche, ou appuyez sur H.",
+    "ar": "على {machine}: {controls}. القائمة الكاملة أسفل يسار الشاشة، أو اضغط H لفتح الدليل الميداني."
+  },
+  "mentor.askEquipment": {
+    "en": "{description} {tips}",
+    "fr": "{description} {tips}",
+    "ar": "{description} {tips}"
+  },
+  "mentor.askSafety": {
+    "en": "Five things I want from you every single shift: forks and booms low when travelling; horn at blind corners; nobody under a suspended load, ever; pedestrians have right of way; and stop before you enter a working zone unless you are working in it.",
+    "fr": "Cinq choses à chaque poste : fourches et flèches basses en déplacement ; klaxon aux angles morts ; personne sous une charge suspendue ; priorité aux piétons ; et arrêt avant d'entrer dans une zone de travail.",
+    "ar": "خمسة أمور أطلبها منك في كل وردية: الشوكات والأذرع منخفضة أثناء السير؛ البوق عند المنعطفات المغلقة؛ لا أحد تحت حمل معلّق أبدًا؛ للمشاة أولوية المرور؛ وتوقّف قبل دخول منطقة عمل ما لم تكن تعمل فيها."
+  },
+  "mentor.askGeneral": {
+    "en": "Ask me about your objective, your machine's controls, how to operate it, or safety. If you are stuck on a lesson I will explain the current step.",
+    "fr": "Demandez-moi votre objectif, les commandes, la conduite ou la sécurité. Si vous bloquez sur une leçon, j'explique l'étape en cours.",
+    "ar": "اسألني عن مهمتك، أو أدوات التحكّم في آلتك، أو طريقة تشغيلها، أو السلامة. وإن تعطّلت في درس فسأشرح لك الخطوة الحالية."
+  },
+  "mentor.askGlossary": {
+    "en": "Twistlock: the four rotating pins that lock a spreader to a container. Tare: the empty weight of a container. Bay: a position along the ship or yard block. Luff: to raise or lower a boom.",
+    "fr": "Twistlock : les quatre verrous qui fixent le spreader au conteneur. Tare : poids à vide. Bay : position le long du navire ou du bloc. Luff : lever ou abaisser la flèche.",
+    "ar": "التويست لوك: المسامير الأربعة الدوّارة التي تقفل الإسبريدر بالحاوية. الوزن الفارغ: وزن الحاوية فارغة. الخليج: موضع على طول السفينة أو كتلة الساحة. المَدّ: رفع الذراع أو خفضه."
+  },
+  "mentor.retry": {
+    "en": "Not quite — but nothing broken and nothing bent, so we go again. Here is what I want you to watch this time: {tip}",
+    "fr": "Pas tout à fait — mais rien de cassé, alors on recommence. Cette fois, surveillez ceci : {tip}",
+    "ar": "لم تكن مثالية — لكن لا شيء انكسر ولا شيء انثنى، فلنعد المحاولة. إليك ما أريدك أن تراقبه هذه المرة: {tip}"
+  },
+  "mentor.lessonIntro": {
+    "en": "{title}. {brief}",
+    "fr": "{title}. {brief}",
+    "ar": "{title}. {brief}"
+  },
+  "mentor.lessonStep": {
+    "en": "Step {n} of {total}: {say}",
+    "fr": "Étape {n} sur {total} : {say}",
+    "ar": "الخطوة {n} من {total}: {say}"
+  },
+  "mentor.hintStuck": {
+    "en": "Having trouble? {hint}",
+    "fr": "Un souci ? {hint}",
+    "ar": "تواجه صعوبة؟ {hint}"
+  },
+  "mentor.debriefPerfect": {
+    "en": "Clean sheet — no safety events, no damage, and the load is exactly where it belongs. That is a professional shift.",
+    "fr": "Sans faute — aucun incident, rien d'endommagé, charge à sa place. Voilà un poste professionnel.",
+    "ar": "سجل نظيف — لا أحداث سلامة ولا أضرار، والحمل في مكانه بالضبط. هذه وردية احترافية."
+  },
+  "mentor.debriefGood": {
+    "en": "Good job. A couple of things to tighten up: {weakness}. Otherwise, that is money in the bank.",
+    "fr": "Bon travail. Deux points à resserrer : {weakness}. Pour le reste, c'est du bon travail.",
+    "ar": "عمل جيد. وهناك أمران يحتاجان تحسينًا: {weakness}. وما عدا ذلك، فهذا ربح صافٍ."
+  },
+  "mentor.debriefPoor": {
+    "en": "You got it done, but we need to talk about {weakness}. Speed is not the score here — control is.",
+    "fr": "C'est fait, mais il faut parler de {weakness}. Ici, le score n'est pas la vitesse, c'est la maîtrise.",
+    "ar": "أنجزت العمل، لكن علينا أن نتحدث عن {weakness}. النتيجة هنا ليست السرعة بل التحكّم."
+  },
+  "mentor.weakness.safety": {
+    "en": "your safety discipline",
+    "fr": "votre discipline de sécurité",
+    "ar": "انضباطك في السلامة"
+  },
+  "mentor.weakness.accuracy": {
+    "en": "precision when placing loads",
+    "fr": "la précision de la pose",
+    "ar": "الدقة عند إنزال الأحمال"
+  },
+  "mentor.weakness.equipment": {
+    "en": "how you use the attachment",
+    "fr": "l'usage de l'accessoire",
+    "ar": "طريقة استخدامك للملحق"
+  },
+  "mentor.weakness.time": {
+    "en": "your pace — you were slow",
+    "fr": "votre rythme, un peu lent",
+    "ar": "وتيرتك — كنت بطيئًا"
+  },
+  "mentor.weakness.efficiency": {
+    "en": "extra journeys you did not need",
+    "fr": "les trajets inutiles",
+    "ar": "رحلات زائدة لا حاجة لها"
+  },
+  "mentor.weakness.none": {
+    "en": "nothing at all",
+    "fr": "rien du tout",
+    "ar": "لا شيء على الإطلاق"
+  },
+  "mentor.careerIntro": {
+    "en": "Right. Career board is open. Take the job, drive it, do it well, and the credits and the paperwork follow. Start with the one I have marked.",
+    "fr": "Bien. Le tableau de carrière est ouvert. Prenez la tâche, exécutez-la proprement, et le reste suivra.",
+    "ar": "حسنًا. لوحة المسار المهني مفتوحة. خُذ المهمة، ونفّذها، وأتقنها، وسيأتي الرصيد والورق بعدها. ابدأ بالمهمة المؤشّرة."
+  },
+  "mentor.freeIntro": {
+    "en": "Free shift — no clock, no job card, the terminal is yours. Practise anything you like. I will be on the radio if you need me.",
+    "fr": "Poste libre — sans chrono, le terminal est à vous. Entraînez-vous. Je reste à la radio.",
+    "ar": "وردية حرة — لا ساعة ولا بطاقة عمل، والمحطة لك. تدرّب على ما تشاء. وسأكون على اللاسلكي إن احتجتني."
+  },
+  "mentor.dockWork": {
+    "en": "Ship work now. The ship-to-shore gantry takes boxes off the vessel; you move them between the apron and the yard. Mind the lashing crew on the quay and keep clear of the crane's back reach.",
+    "fr": "Travail à quai. Le portique de quai décharge le navire ; vous déplacez les boîtes entre l'aire de quai et le parc. Attention à l'équipe d'arrimage.",
+    "ar": "العمل على السفينة الآن. الرافعة الجسرية الشاطئية تُنزل الحاويات من السفينة، وأنت تنقلها بين الرصيف والساحة. احترس من طاقم الربط على الرصيف وابقَ بعيدًا عن مدى الرافعة الخلفي."
+  },
+  "mentor.gateWork": {
+    "en": "Gate lanes. Trailers come in loaded and leave empty, or the other way round. Check the job card before you cross those lines — a box on the wrong trailer is somebody's bad day.",
+    "fr": "Les voies du portail. Les remorques entrent chargées et ressortent vides, ou l'inverse. Vérifiez la fiche avant de traverser les lignes.",
+    "ar": "مسارات البوابة. تدخل المقطورات محمّلة وتخرج فارغة أو العكس. راجع بطاقة العمل قبل عبور تلك الخطوط — فحاوية على المقطورة الخطأ تعني يومًا سيئًا لشخص ما."
+  },
+  "mentor.appreciation": {
+    "en": "That is the terminal running the way it should. Good work.",
+    "fr": "Voilà le terminal qui tourne comme il faut. Beau travail.",
+    "ar": "هكذا تعمل المحطة كما ينبغي. عمل جيد."
+  }
+}

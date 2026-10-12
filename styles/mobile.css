@@ -1,0 +1,127 @@
+/* ==========================================================================
+   PORT OPS SIMULATOR — mobile.css
+   Landscape-first touch layout. The mobile HUD is a different arrangement of
+   the same components rather than a scaled-down desktop HUD.
+   ========================================================================== */
+
+/* -------------------------------------------------- touch-capable devices -- */
+body.is-touch .hud-controls{display:none}
+body.is-touch #t-mentor,body.is-touch #t-pause{display:none}   /* HUD already has Ask Mentor + Pause */
+
+body.is-touch #hud-map{display:none}            /* minimap toggle lives elsewhere on touch */
+body.is-touch .hud-machines{max-width:min(330px,42vw)}
+body.is-touch .hud-minimap{width:150px;bottom:calc(178px + var(--safe-b))}
+body.is-touch .hud-left{max-width:min(430px,50vw)}
+
+/* Landscape phones / small tablets ---------------------------------------- */
+@media (max-width:1080px){
+  .list-side{width:236px}
+  .menu-buttons{grid-template-columns:1fr}
+  .dialogue{max-height:46vh}
+}
+
+@media (max-width:900px) and (orientation:landscape){
+  .menu-wrap{gap:10px}
+  .brand-mark{width:52px;height:52px}
+  .menu-buttons{grid-template-columns:1fr 1fr;gap:8px}
+  .mbtn{padding:11px 13px}
+  .mbtn .mb-main{font-size:14.5px}
+  .mbtn .mb-sub{display:none}
+  .menu-row{grid-template-columns:repeat(4,1fr);gap:8px}
+  .menu-foot{display:none}
+  .player-card{min-width:200px;padding:9px 12px}
+  .pc-stats{font-size:11.5px}
+}
+
+@media (max-width:760px) and (orientation:landscape){
+  .hud-left{max-width:46vw}
+  .mission-card{min-width:0;max-width:46vw;padding:7px 10px}
+  .mc-name{font-size:12.5px}
+  .mc-obj{font-size:11.5px}
+  .icon-btn .ib-label{display:none}
+  .hud-machines{max-width:min(300px,40vw)}
+  .machine-panel{width:238px;padding:8px 10px;gap:6px}
+  .mp-svg{width:88px;height:46px}
+  .t-actions{grid-template-columns:repeat(3,66px)}
+  .t-act{width:66px;height:54px;font-size:10.5px}
+  .t-act.wide{width:141px}
+  .t-joystick{width:132px;height:132px}
+  .t-knob{width:54px;height:54px;margin:-27px 0 0 -27px}
+  .t-pedals{left:calc(164px + var(--safe-l));bottom:calc(22px + var(--safe-b))}
+  .t-pedal{width:66px;height:66px}
+  .dialogue{gap:12px;padding:11px 12px}
+  .dlg-portrait,.dlg-portrait canvas{width:104px}
+  .dlg-portrait canvas{height:104px}
+  .dlg-text{font-size:13.5px}
+  .list-side{width:210px;padding:10px}
+}
+
+/* Very short landscape screens (older phones) ----------------------------- */
+@media (max-height:460px) and (orientation:landscape){
+  .hud-minimap{display:none}
+  body.is-touch .hud-machines{display:none}   /* would sit under the action buttons */
+  .machine-panel .mp-body{display:none}
+  .mission-card .mc-desc{display:none}
+  .t-joystick{width:112px;height:112px}
+  .t-pedal{width:58px;height:58px}
+  .t-brake{width:78px;height:48px}
+  .t-act{width:62px;height:52px;font-size:10px}
+  .t-actions{grid-template-columns:repeat(3,60px);gap:7px}
+  .t-act.wide{width:127px}
+  .dialogue{max-height:60vh}
+  .dlg-portrait,.dlg-portrait canvas{width:88px}
+  .dlg-portrait canvas{height:88px}
+}
+
+/* Compact menu + Mentor card on short landscape screens so the greeting never
+   covers the menu buttons */
+@media (max-height:460px) and (orientation:landscape){
+  .menu{align-items:flex-start;padding-top:calc(8px + var(--safe-t,0px))}
+  .menu-wrap{gap:6px}
+  .brand-mark{width:40px;height:40px}
+  .menu-buttons{gap:5px}
+  .mbtn{padding:5px 11px}
+  .mbtn>.ico{width:22px;height:22px}
+  .mbtn .mb-main{font-size:13.5px}
+  .menu-row{gap:6px}
+  .mbtn.small{padding:7px 10px}
+  .player-card{padding:6px 10px;min-width:170px}
+  #dialogue-layer{padding-bottom:calc(6px + var(--safe-b))}
+  .dialogue{padding:8px 10px;gap:10px;max-height:44vh}
+  .dlg-portrait,.dlg-portrait canvas{width:72px}
+  .dlg-portrait canvas{height:72px}
+  .dlg-name{padding:3px 0;left:-4px;right:-4px}
+  .dlg-name b{font-size:10.5px;white-space:nowrap}
+  .dlg-name i{display:none}
+  .dlg-text{font-size:12.5px;line-height:1.45}
+  .dlg-opt{padding:5px 10px;font-size:12px}
+  .dlg-body{gap:6px}
+}
+
+/* -------------------------------------------------------- portrait notice -- */
+@media (orientation:portrait) and (max-width:820px){
+  #rotate-notice{display:grid}
+}
+
+/* ---------------------------------------------------------- tablet tuning -- */
+@media (min-width:821px) and (max-width:1180px) and (pointer:coarse){
+  .t-joystick{width:168px;height:168px}
+  .t-actions{grid-template-columns:repeat(3,84px)}
+  .t-act{width:84px;height:58px;font-size:12px}
+  .t-act.wide{width:177px}
+}
+
+/* ------------------------------------------------------------ desktop xl -- */
+@media (min-width:1500px){
+  .machine-panel{width:300px}
+  .hud-minimap{width:232px}
+  .mission-card{max-width:440px}
+}
+
+/* --------------------------------------------------------- reduced motion -- */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+
+/* ---------------------------------------------------------- print (n/a) --- */
+@media print{#app{display:none}}
