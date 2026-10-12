@@ -9,6 +9,7 @@
 #stage-shade{
   position:absolute;inset:0;pointer-events:none;
   background:
+    linear-gradient(135deg,rgba(255,214,150,.10),transparent 50%,rgba(20,50,90,.13)),
     radial-gradient(120% 100% at 50% 50%,transparent 52%,rgba(3,12,20,.42) 100%),
     linear-gradient(180deg,rgba(3,12,20,.34),transparent 16%,transparent 78%,rgba(3,12,20,.30));
 }

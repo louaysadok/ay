@@ -8,14 +8,14 @@
     "waterLine": 30
   },
   "palette": {
-    "concrete": "#7d8791",
-    "concreteDark": "#4a535c",
-    "asphalt": "#2f373f",
-    "asphaltDark": "#28303a",
-    "asphaltLight": "#3b444e",
-    "quayApron": "#8b949d",
-    "yardPav": "#5d6771",
-    "training": "#666f79",
+    "concrete": "#8a949d",
+    "concreteDark": "#46515c",
+    "asphalt": "#2a323d",
+    "asphaltDark": "#242c37",
+    "asphaltLight": "#38424d",
+    "quayApron": "#a2adb6",
+    "yardPav": "#5b6a77",
+    "training": "#6a7a86",
     "marking": "#f2f7fa",
     "markingWorn": "#c3cdd5",
     "yellowLine": "#f0b429",
@@ -24,7 +24,7 @@
     "waterDeep": "#072f47",
     "trainLine": "#79848e",
     "dirt": "#443f36",
-    "grass": "#4a6a46"
+    "grass": "#4f7a4a"
   },
   "areas": [
     {

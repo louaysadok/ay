@@ -42,16 +42,19 @@ export class TerrainRenderer {
     c.fillRect(this.m(r.x), this.m(r.y), this.m(r.w), this.m(r.h));
   }
 
-  noise(r, color, count, sizeRange = [1, 5], alpha = 0.12) {
+  /** Speckle. Default is fine grain (asphalt/concrete); pass scale 0.4 for big stains. */
+  noise(r, color, count, sizeRange = [1, 5], alpha = 0.12, scale = 0.16) {
     const c = this.ctx;
     const rng = this.rng;
     c.save();
-    c.globalAlpha = alpha;
+    c.globalAlpha = alpha * (scale < 0.3 ? 1.5 : 1);
     c.fillStyle = color;
-    for (let i = 0; i < count; i++) {
+    const n = Math.round(count * (scale < 0.3 ? 3 : 1));
+    for (let i = 0; i < n; i++) {
       const x = this.m(r.x + rng.range(0, r.w));
       const y = this.m(r.y + rng.range(0, r.h));
-      const s = this.m(rng.range(sizeRange[0], sizeRange[1])) * 0.4;
+      const hi = scale < 0.3 ? Math.min(sizeRange[1], 3.2) : sizeRange[1];
+      const s = this.m(rng.range(Math.min(sizeRange[0], hi), hi)) * scale;
       c.beginPath();
       c.ellipse(x, y, s, s * rng.range(0.5, 1), rng.range(0, TAU), 0, TAU);
       c.fill();
@@ -279,7 +282,7 @@ export class TerrainRenderer {
     // ---------- maintenance area -------------------------------------------
     const maint = L.areas.find((a) => a.id === 'maintenance');
     if (maint) {
-      this.noise(maint.rect, '#101820', 220, [1.5, 8], .1);   // oil staining
+      this.noise(maint.rect, '#101820', 220, [1.5, 8], .1, 0.4);   // oil staining
       // bay outlines
       for (let i = 0; i < 2; i++) {
         const bx = maint.rect.x + 4 + i * 20, by = maint.rect.y + 20;
@@ -410,9 +413,9 @@ export class TerrainRenderer {
     }
 
     // ---------- dirt / wear edges near the perimeter ------------------------
-    this.noise({ x: 0, y: L.world.waterLine, w: 8, h: this.h - L.world.waterLine }, '#4c4235', 120, [2, 9], .1);
-    this.noise({ x: this.w - 8, y: L.world.waterLine, w: 8, h: this.h - L.world.waterLine }, '#4c4235', 120, [2, 9], .1);
-    this.noise({ x: 0, y: this.h - 6, w: this.w, h: 6 }, '#4c4235', 160, [2, 10], .09);
+    this.noise({ x: 0, y: L.world.waterLine, w: 8, h: this.h - L.world.waterLine }, '#4c4235', 120, [2, 9], .1, 0.3);
+    this.noise({ x: this.w - 8, y: L.world.waterLine, w: 8, h: this.h - L.world.waterLine }, '#4c4235', 120, [2, 9], .1, 0.3);
+    this.noise({ x: 0, y: this.h - 6, w: this.w, h: 6 }, '#4c4235', 160, [2, 10], .09, 0.3);
 
     // manholes + drains
     const rng = this.rng;
@@ -435,12 +438,18 @@ export class TerrainRenderer {
       c.restore();
     }
 
+    // ---------- greenery: grass verges, hedges and trees --------------------
+    this._bakeGreenery();
+
+    // ---------- lamp posts with a baked pool of warm light ------------------
+    this._bakeLamps();
+
     // ---------- tyre scrub arcs inside the yard ----------------------------
     c.save();
-    c.globalAlpha = .12;
+    c.globalAlpha = .045;
     c.strokeStyle = '#101820';
-    c.lineWidth = this.m(.5);
-    for (let i = 0; i < 34; i++) {
+    c.lineWidth = this.m(.35);
+    for (let i = 0; i < 22; i++) {
       const x = rng.range(30, 250), y = rng.range(90, 186);
       const r = rng.range(6, 22);
       const a0 = rng.range(0, TAU);
@@ -449,6 +458,89 @@ export class TerrainRenderer {
       c.stroke();
     }
     c.restore();
+  }
+
+
+  /* ---------------------------------------------------- greenery + lamps -- */
+  _bakeGreenery() {
+    const c = this.ctx, P = this.layout.palette, L = this.layout, rng = this.rng;
+    const wl = L.world.waterLine;
+    // grass verge strips along the west / east / south perimeter
+    const strips = [
+      { x: 0, y: wl + 1, w: 6.5, h: this.h - wl - 1 },
+      { x: this.w - 6.5, y: wl + 1, w: 6.5, h: this.h - wl - 1 },
+      { x: 6.5, y: this.h - 5, w: this.w - 13, h: 5 }
+    ];
+    for (const s of strips) {
+      const g = c.createLinearGradient(this.m(s.x), this.m(s.y), this.m(s.x + (s.w < s.h ? s.w : 0)), this.m(s.y + (s.w < s.h ? 0 : s.h)));
+      g.addColorStop(0, rgba(P.grass, .9)); g.addColorStop(1, rgba(P.grass, .55));
+      c.fillStyle = g;
+      c.fillRect(this.m(s.x), this.m(s.y), this.m(s.w), this.m(s.h));
+      this.noise(s, '#2f4d2c', 160, [1, 3], .12);
+      this.noise(s, '#86b36e', 120, [1, 3], .1);
+    }
+    // kerb line where the verge meets the paving
+    c.fillStyle = 'rgba(210,220,228,.5)';
+    c.fillRect(this.m(6.5), this.m(wl + 1), this.m(.35), this.m(this.h - wl - 6));
+    c.fillRect(this.m(this.w - 6.85), this.m(wl + 1), this.m(.35), this.m(this.h - wl - 6));
+    const tree = (x, y, r) => {
+      // soft shadow to the south-east, then layered canopy
+      c.save();
+      c.globalAlpha = .28; c.fillStyle = '#04100a';
+      c.beginPath(); c.ellipse(this.m(x + r * .45), this.m(y + r * .55), this.m(r * 1.05), this.m(r * .9), 0, 0, TAU); c.fill();
+      c.globalAlpha = 1;
+      const cols = ['#27573a', '#2f6b45', '#3b8052', '#4d9a62'];
+      for (let i = 0; i < cols.length; i++) {
+        const k = 1 - i * .2;
+        c.fillStyle = cols[i];
+        c.beginPath();
+        c.arc(this.m(x - i * r * .06), this.m(y - i * r * .07), this.m(r * k), 0, TAU);
+        c.fill();
+      }
+      c.fillStyle = 'rgba(210,245,200,.22)';
+      for (let i = 0; i < 7; i++) {
+        const a = rng.range(0, TAU), d = rng.range(0, r * .55);
+        c.beginPath(); c.arc(this.m(x - r * .2 + Math.cos(a) * d), this.m(y - r * .25 + Math.sin(a) * d), this.m(r * rng.range(.1, .2)), 0, TAU); c.fill();
+      }
+      c.restore();
+    };
+    for (let y = wl + 12; y < this.h - 10; y += rng.range(13, 19)) {
+      tree(rng.range(1.9, 3.6), y, rng.range(1.5, 2.3));
+      tree(this.w - rng.range(1.9, 3.6), y + rng.range(-3, 3), rng.range(1.5, 2.3));
+    }
+    for (let x = 14; x < this.w - 14; x += rng.range(15, 22)) tree(x, this.h - rng.range(1.8, 3), rng.range(1.3, 2));
+    // low hedges beside the office buildings
+    const hedge = (x, y, w, h) => {
+      c.fillStyle = '#2d6040'; c.fillRect(this.m(x), this.m(y), this.m(w), this.m(h));
+      c.fillStyle = 'rgba(160,220,150,.22)'; c.fillRect(this.m(x), this.m(y), this.m(w), this.m(Math.min(h, .5)));
+    };
+    for (const b of L.buildings) {
+      if (b.kind !== 'office') continue;
+      hedge(b.rect.x, b.rect.y + b.rect.h + 1.4, b.rect.w, 1);
+    }
+  }
+
+  _bakeLamps() {
+    const c = this.ctx, L = this.layout;
+    for (const [x, y] of L.lampPosts || []) {
+      // light pool (additive, very low alpha: reads as a soft warm patch on the paving)
+      c.save();
+      c.globalCompositeOperation = 'lighter';
+      const R = this.m(15);
+      const g = c.createRadialGradient(this.m(x), this.m(y), 0, this.m(x), this.m(y), R);
+      g.addColorStop(0, 'rgba(255,214,140,.16)'); g.addColorStop(.5, 'rgba(255,214,140,.06)'); g.addColorStop(1, 'rgba(255,214,140,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(this.m(x), this.m(y), R, 0, TAU); c.fill();
+      c.restore();
+      // pole base, shadow and lamp head
+      c.save();
+      c.globalAlpha = .3; c.fillStyle = '#05121c';
+      c.beginPath(); c.ellipse(this.m(x + 1.4), this.m(y + 1.7), this.m(.9), this.m(.45), .6, 0, TAU); c.fill();
+      c.globalAlpha = 1;
+      c.fillStyle = '#2b333b'; c.beginPath(); c.arc(this.m(x), this.m(y), this.m(.55), 0, TAU); c.fill();
+      c.fillStyle = '#6d7a86'; c.beginPath(); c.arc(this.m(x), this.m(y), this.m(.3), 0, TAU); c.fill();
+      c.fillStyle = '#ffe3a6'; c.beginPath(); c.arc(this.m(x - .2), this.m(y - .25), this.m(.22), 0, TAU); c.fill();
+      c.restore();
+    }
   }
 
   /* --------------------------------------------------------- decor pieces -- */

@@ -85,6 +85,7 @@ export class Renderer {
     }
   }
 
+
   /* ------------------------------------------------------------------ water */
   drawWater(ctx, view) {
     const waterH = this.terminal.waterLine;
@@ -96,6 +97,20 @@ export class Renderer {
     ctx.rect(x0, 0, x1 - x0, waterH);
     ctx.clip();
     const t = this.wavePhase;
+    // depth gradient: deep navy offshore -> turquoise along the quay
+    const wgr = ctx.createLinearGradient(0, 0, 0, waterH);
+    wgr.addColorStop(0, '#052a44'); wgr.addColorStop(.55, '#0a5479'); wgr.addColorStop(1, '#17909f');
+    ctx.fillStyle = wgr;
+    ctx.fillRect(x0, 0, x1 - x0, waterH);
+    // slow light bands drifting across the surface (cheap caustics)
+    ctx.globalAlpha = 0.07; ctx.fillStyle = '#9fe7f2';
+    for (let i = 0; i < 9; i++) {
+      const bx = x0 + (((i * 53 + t * 5 * (1 + (i % 3) * .3)) % (x1 - x0 + 60)) - 30);
+      ctx.beginPath();
+      ctx.moveTo(bx, 0); ctx.lineTo(bx + 14, 0); ctx.lineTo(bx + 4, waterH); ctx.lineTo(bx - 10, waterH);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
     ctx.strokeStyle = 'rgba(190,230,255,.14)';
     ctx.lineWidth = 1.4 / this.camera.zoom;
     const rows = 16;
@@ -119,6 +134,17 @@ export class Renderer {
       if (x === x0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke();
+    // sun glints: tiny bright dashes that twinkle
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 46; i++) {
+      const tw = Math.sin(t * (1.1 + (i % 5) * .35) + i * 2.3);
+      if (tw < 0.35) continue;
+      const gx = x0 + ((i * 41.3) % Math.max(1, x1 - x0));
+      const gy = 2 + ((i * 17.7) % Math.max(1, waterH - 6));
+      ctx.globalAlpha = 0.5 * (tw - .35);
+      ctx.fillRect(gx, gy, 1.5 + (i % 3) * .5, 0.22);
+    }
+    ctx.globalAlpha = 1;
     // deep-water shimmer
     ctx.globalAlpha = 0.1;
     ctx.fillStyle = '#bfe9ff';
@@ -383,37 +409,98 @@ export class Renderer {
       const r = b.rect;
       if (r.x + r.w < view.x - 10 || r.x > view.x + view.w + 10) continue;
       if (r.y + r.h < view.y - 10 || r.y > view.y + view.h + 10) continue;
-      this.drawBuilding(ctx, b, r);
+      const spr = this._buildingSprite(b, r);
+      ctx.drawImage(spr.canvas, r.x - spr.m, r.y - spr.m, spr.w, spr.h);
     }
+  }
+
+  /**
+   * Buildings are static, so each is painted once into an offscreen image
+   * (shadow, walls, roof, equipment, signage) and just blitted every frame.
+   */
+  _buildingSprite(b, r) {
+    this._bldCache = this._bldCache || new Map();
+    let spr = this._bldCache.get(b.id);
+    if (spr) return spr;
+    const PPU = 12, m = 5;                       // px per metre, margin in metres (shadow + walls)
+    const w = r.w + m * 2, h = r.h + m * 2;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(w * PPU); canvas.height = Math.ceil(h * PPU);
+    const cx = canvas.getContext('2d');
+    cx.scale(PPU, PPU);
+    cx.translate(m - r.x, m - r.y);
+    this.drawBuilding(cx, b, r);
+    spr = { canvas, m, w, h };
+    this._bldCache.set(b.id, spr);
+    return spr;
   }
 
   drawBuilding(ctx, b, r) {
     ctx.save();
-    // cast shadow
-    ctx.globalAlpha = 0.32;
+    // soft cast shadow (two passes read as a blurred edge)
+    const wallH = b.kind === 'warehouse' ? 2.6 : b.kind === 'office' ? 1.9 : 1.5;
     ctx.fillStyle = '#040f18';
-    this.roundRect(ctx, r.x + SHADOW_DX * 0.55, r.y + SHADOW_DY * 0.6, r.w, r.h, 1.2);
+    ctx.globalAlpha = 0.14;
+    this.roundRect(ctx, r.x + SHADOW_DX * 0.6 - 0.7, r.y + SHADOW_DY * 0.65 - 0.7, r.w + 1.4, r.h + 1.4, 1.8);
+    ctx.fill();
+    ctx.globalAlpha = 0.2;
+    this.roundRect(ctx, r.x + SHADOW_DX * 0.5, r.y + SHADOW_DY * 0.55, r.w, r.h, 1.2);
     ctx.fill();
     ctx.globalAlpha = 1;
 
-    // roof
-    const g = ctx.createLinearGradient(r.x, r.y, r.x + r.w * 0.3, r.y + r.h);
-    if (b.kind === 'warehouse') { g.addColorStop(0, '#7f8c98'); g.addColorStop(1, '#616d78'); }
-    else if (b.kind === 'office') { g.addColorStop(0, '#9aa6b1'); g.addColorStop(1, '#7b8792'); }
-    else if (b.kind === 'workshop') { g.addColorStop(0, '#6f7b86'); g.addColorStop(1, '#545f69'); }
-    else { g.addColorStop(0, '#8b97a2'); g.addColorStop(1, '#6d7984'); }
+    // visible south + east walls (oblique view): gives the block real height
+    const wallCol = b.kind === 'warehouse' ? ['#5d7482', '#3c4e5b'] : b.kind === 'office' ? ['#b6c1ca', '#8794a0'] : b.kind === 'workshop' ? ['#6a5748', '#463a31'] : ['#97a4af', '#6f7c87'];
+    const wg = ctx.createLinearGradient(0, r.y + r.h, 0, r.y + r.h + wallH);
+    wg.addColorStop(0, wallCol[0]); wg.addColorStop(1, wallCol[1]);
+    ctx.fillStyle = wg;
+    ctx.fillRect(r.x + 0.3, r.y + r.h - 0.5, r.w - 0.3, wallH + 0.5);
+    ctx.fillStyle = wallCol[1];
+    ctx.fillRect(r.x + r.w - 0.2, r.y + 0.8, wallH * 0.4, r.h + wallH - 0.8);
+    // wall detail: cladding lines, plus a window band on offices
+    ctx.globalAlpha = 0.22; ctx.strokeStyle = '#06121b'; ctx.lineWidth = 0.1;
+    for (let x = r.x + 1.6; x < r.x + r.w - 0.5; x += 1.6) { ctx.beginPath(); ctx.moveTo(x, r.y + r.h); ctx.lineTo(x, r.y + r.h + wallH); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    if (b.kind === 'office') {
+      ctx.fillStyle = '#2b6f93';
+      for (let x = r.x + 1.5; x < r.x + r.w - 3; x += 3.2) ctx.fillRect(x, r.y + r.h + 0.35, 2.2, wallH * 0.5);
+      ctx.fillStyle = 'rgba(255,255,255,.25)';
+      for (let x = r.x + 1.5; x < r.x + r.w - 3; x += 3.2) ctx.fillRect(x, r.y + r.h + 0.35, 2.2, 0.28);
+    }
+    ctx.fillStyle = 'rgba(0,0,0,.22)';
+    ctx.fillRect(r.x + 0.3, r.y + r.h + wallH - 0.25, r.w - 0.3, 0.25);
+
+    // roof: material colour per building type
+    const g = ctx.createLinearGradient(r.x, r.y, r.x + r.w * 0.35, r.y + r.h);
+    if (b.kind === 'warehouse') { g.addColorStop(0, '#4f93b0'); g.addColorStop(1, '#2f6c8a'); }
+    else if (b.kind === 'office') { g.addColorStop(0, '#d5dde4'); g.addColorStop(1, '#b4c0ca'); }
+    else if (b.kind === 'workshop') { g.addColorStop(0, '#9b7a5e'); g.addColorStop(1, '#755942'); }
+    else { g.addColorStop(0, '#aab6c0'); g.addColorStop(1, '#8794a0'); }
     ctx.fillStyle = g;
-    this.roundRect(ctx, r.x, r.y, r.w, r.h, 1.2);
+    this.roundRect(ctx, r.x, r.y, r.w, r.h, 1.0);
     ctx.fill();
 
-    // roof ribs / panels
-    ctx.globalAlpha = 0.18;
-    ctx.strokeStyle = '#0b1a24';
-    ctx.lineWidth = 0.14;
-    const step = b.kind === 'warehouse' ? 3.4 : 2.6;
-    for (let y = r.y + step; y < r.y + r.h; y += step) {
-      ctx.beginPath(); ctx.moveTo(r.x + 0.4, y); ctx.lineTo(r.x + r.w - 0.4, y); ctx.stroke();
+    // roof panels: standing-seam ribs (warehouse/workshop) or tile grid (offices)
+    ctx.save();
+    ctx.beginPath(); this.roundRect(ctx, r.x, r.y, r.w, r.h, 1.0); ctx.clip();
+    if (b.kind === 'warehouse' || b.kind === 'workshop') {
+      ctx.globalAlpha = 0.22; ctx.strokeStyle = '#06141d'; ctx.lineWidth = 0.1;
+      for (let x = r.x + 1.3; x < r.x + r.w; x += 1.3) { ctx.beginPath(); ctx.moveTo(x, r.y); ctx.lineTo(x, r.y + r.h); ctx.stroke(); }
+      ctx.globalAlpha = 0.16; ctx.strokeStyle = '#ffffff';
+      for (let x = r.x + 1.38; x < r.x + r.w; x += 1.3) { ctx.beginPath(); ctx.moveTo(x, r.y); ctx.lineTo(x, r.y + r.h); ctx.stroke(); }
+      // ridge line + sun-lit half
+      ctx.globalAlpha = 0.14; ctx.fillStyle = '#ffffff';
+      ctx.fillRect(r.x, r.y, r.w, r.h * 0.5);
+      ctx.globalAlpha = 0.5; ctx.fillStyle = '#d9ecf5';
+      ctx.fillRect(r.x, r.y + r.h * 0.5 - 0.18, r.w, 0.36);
+    } else {
+      ctx.globalAlpha = 0.14; ctx.strokeStyle = '#26323c'; ctx.lineWidth = 0.08;
+      for (let x = r.x + 2.4; x < r.x + r.w; x += 2.4) { ctx.beginPath(); ctx.moveTo(x, r.y); ctx.lineTo(x, r.y + r.h); ctx.stroke(); }
+      for (let y = r.y + 2.4; y < r.y + r.h; y += 2.4) { ctx.beginPath(); ctx.moveTo(r.x, y); ctx.lineTo(r.x + r.w, y); ctx.stroke(); }
+      // parapet band
+      ctx.globalAlpha = 0.35; ctx.strokeStyle = '#6f7d89'; ctx.lineWidth = 0.7;
+      ctx.strokeRect(r.x + 0.35, r.y + 0.35, r.w - 0.7, r.h - 0.7);
     }
+    ctx.restore();
     ctx.globalAlpha = 1;
 
     // roof equipment: skylights, vents, HVAC
@@ -547,22 +634,22 @@ export class Renderer {
     ctx.rotate(angle);
     if (lift > 0) {
       // side wall of the stack below
-      ctx.globalAlpha = 0.32;
+      ctx.globalAlpha = 0.22;
       ctx.fillStyle = '#1a2530';
       ctx.fillRect(-w / 2 + 0.3, h / 2 - 0.2, w, lift * 0.55);
       ctx.globalAlpha = 1;
     }
     // dark silhouette shadow (a tinted sprite copy read as a ghost container)
-    ctx.globalAlpha = 0.26;
     ctx.fillStyle = '#05121c';
-    ctx.fillRect(-w / 2 + SHADOW_DX * .2 + lift * .3, -h / 2 + SHADOW_DY * .22 + lift * .3, w, h);
+    ctx.globalAlpha = 0.15;
+    ctx.fillRect(-w / 2 + SHADOW_DX * .17 + lift * .3, -h / 2 + SHADOW_DY * .18 + lift * .3, w, h);
     ctx.globalAlpha = 1;
     ctx.drawImage(spr.canvas, -spr.drawW / 2, -spr.drawH / 2 - lift, spr.drawW, spr.drawH);
     // stack-height marking: a quiet stencil on the top box, not a UI badge
     if (tier > 0 && this.camera.zoom > 6) {
       ctx.save();
       ctx.translate(0, -lift);
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.42;
       ctx.fillStyle = '#f4f8fb';
       ctx.font = '700 1px "Segoe UI", system-ui, sans-serif';
       ctx.textAlign = 'right';
